@@ -1,0 +1,6 @@
+{
+  "name": "VP Media Suites",
+  "description": "Premium digital agency website for VP Media Suites specializing in website design, branding, social media marketing, and digital advertising.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
