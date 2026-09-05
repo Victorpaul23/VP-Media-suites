@@ -10,7 +10,7 @@ interface ConsultationModalProps {
 
 export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, onClose }) => {
   const [name, setName] = useState('');
-  const [packageType, setPackageType] = useState('SMB Website (₦90,000)');
+  const [packageType, setPackageType] = useState('SMB Website (₦100,000)');
   const [note, setNote] = useState('');
 
   if (!isOpen) return null;
@@ -42,9 +42,9 @@ Project Details: ${note}`;
           <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-bold">
             <Sparkles className="w-3 h-3" /> Quick Proposal Request
           </div>
-          <h3 className="text-xl font-extrabold text-slate-900">Get Custom Quote From Victor</h3>
+          <h3 className="text-xl font-extrabold text-slate-900">Get Custom Quote</h3>
           <p className="text-xs text-slate-500">
-            Tell us about your brand and jump straight into WhatsApp!
+            Tell us about your project and jump straight into WhatsApp!
           </p>
         </div>
 
@@ -69,10 +69,10 @@ Project Details: ${note}`;
               className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:outline-none focus:border-blue-600"
             >
               <option value="Portfolio Website (₦30,000)">Portfolio Website (₦30,000)</option>
-              <option value="SMB Website (₦90,000)">SMB Website (₦90,000)</option>
+              <option value="SMB Website (₦100,000)">SMB Website (₦100,000)</option>
               <option value="Enterprise Platform (₦500k+)">Enterprise Platform (₦500k+)</option>
-              <option value="Elite Social Marketing">Elite Social Marketing</option>
-              <option value="Paid Ads Campaign">Paid Ads Campaign</option>
+              <option value="Custom E-Commerce Platform">Custom E-Commerce Platform</option>
+              <option value="Custom Web App & SaaS">Custom Web App & SaaS</option>
             </select>
           </div>
 
@@ -89,10 +89,10 @@ Project Details: ${note}`;
 
           <button
             type="submit"
-            className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md flex items-center justify-center gap-2"
+            className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md flex items-center justify-center gap-2"
           >
-            <MessageSquare className="w-4 h-4" />
-            <span>Connect Victor on WhatsApp</span>
+            <MessageSquare className="w-4 h-4 fill-white text-white" />
+            <span>Send us a message on WhatsApp</span>
           </button>
         </form>
       </div>

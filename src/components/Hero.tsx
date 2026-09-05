@@ -1,5 +1,8 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { AGENCY_INFO } from '../data/agencyData';
+import { navigateTo } from '../utils/navigation';
+import blueGlassDiscTransparent from '../assets/images/blue_glass_disc_transparent.png';
 import {
   Sparkles,
   MessageSquare,
@@ -8,6 +11,7 @@ import {
   CheckCircle2,
   Zap,
   Cpu,
+  FileText,
 } from 'lucide-react';
 
 interface HeroProps {
@@ -38,10 +42,36 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation }) => {
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1] text-slate-900">
-              ELEVATE YOUR BRAND.{' '}
-              <span className="text-blue-gradient drop-shadow-xs">
-                DOMINATE THE DIGITAL ERA.
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.18] text-slate-900">
+              <span className="block tracking-tight text-slate-900 uppercase mb-3 font-extrabold text-3xl sm:text-4xl lg:text-5xl">
+                WEBSITE AGENCY
+              </span>
+              <span className="relative inline-block font-auriol font-semibold text-3xl sm:text-4xl lg:text-5xl text-slate-900 leading-snug">
+                Building the <span className="text-blue-600 font-bold">website</span> you{' '}
+                <span className="relative inline-block text-slate-950 font-bold text-glow-imagined">
+                  imagined.
+                  {/* Sleek yellow brush stroke underline - compact and placed under imagined */}
+                  <svg
+                    className="absolute -bottom-2 sm:-bottom-2.5 left-0 w-full h-3 sm:h-4 text-amber-400 pointer-events-none z-0"
+                    viewBox="0 0 160 14"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M2 9.5C35 4.5 95 3 158 7C125 11.5 65 13 2 9.5Z"
+                      fill="#FBBF24"
+                      opacity="0.92"
+                    />
+                    <path
+                      d="M6 10.5C45 5.5 110 4.5 152 8"
+                      stroke="#F59E0B"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      opacity="0.8"
+                    />
+                  </svg>
+                </span>
               </span>
             </h1>
 
@@ -53,7 +83,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation }) => {
             <div className="space-y-1.5 text-sm sm:text-base text-slate-800">
               <p className="font-bold text-amber-800">Our services:</p>
               <p className="font-medium text-slate-700">
-                Web Design, Social media Marketing, Digital Advertising, Video editing
+                Web Design, Custom Web Applications, E-Commerce, Business Platforms
               </p>
             </div>
 
@@ -66,14 +96,26 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation }) => {
                 className="w-full sm:w-auto px-7 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2.5 hover:-translate-y-0.5 active:translate-y-0"
               >
                 <MessageSquare className="w-4 h-4 fill-white text-white" />
-                <span>DM Victor on WhatsApp ({AGENCY_INFO.phone})</span>
+                <span>Send us a message on WhatsApp</span>
+              </a>
+
+              <a
+                href="/GetQuote"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateTo('/GetQuote');
+                }}
+                className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-sm border border-amber-400 shadow-lg shadow-amber-400/20 transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              >
+                <FileText className="w-4 h-4 text-slate-900" />
+                <span>Build My Website</span>
               </a>
 
               <a
                 href="#web-services"
-                className="w-full sm:w-auto px-6 py-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm border border-slate-200 shadow-xs transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0"
+                className="w-full sm:w-auto px-5 py-4 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm border border-slate-200 shadow-xs transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5 active:translate-y-0"
               >
-                <span>View Web Packages (From ₦30k)</span>
+                <span>View Packages</span>
                 <ArrowRight className="w-4 h-4 text-blue-600" />
               </a>
             </div>
@@ -95,31 +137,37 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation }) => {
             </div>
           </div>
 
-          {/* Right Column: Hero Showcase Image with Premium Aurora Conic Gradient Border */}
+          {/* Right Column: Premium 3D Glossy Blue Orb with Gentle Levitation */}
           <div className="lg:col-span-5 relative flex justify-center items-center">
-            <div className="relative w-full max-w-lg lg:max-w-none">
-              {/* Soft Ambient Background Glow */}
-              <div className="aurora-border-ambient">
-                <div className="aurora-border-glow" />
-              </div>
-
-              {/* Rotating Conic Gradient Border Wrapper */}
-              <div className="aurora-border-wrapper">
-                <div className="aurora-border-glow" />
-                
-                {/* Inner Image Frame */}
-                <div className="relative z-10 bg-white rounded-[1.55rem] overflow-hidden">
+            <div className="relative w-full max-w-md lg:max-w-none flex justify-center items-center py-6 sm:py-10">
+              {/* Soft Ambient Radial Halo behind the orb */}
+              <div className="absolute w-72 h-72 sm:w-96 sm:h-96 bg-gradient-to-tr from-blue-600/25 via-cyan-400/20 to-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+              
+              {/* Slow Bouncing Motion Container */}
+              <motion.div
+                animate={{
+                  y: [-14, 14, -14],
+                }}
+                transition={{
+                  duration: 4.5,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+                className="relative z-10 flex items-center justify-center p-2 sm:p-4"
+              >
+                <div className="relative group cursor-pointer">
+                  {/* Subtle outer neon ambient aura */}
+                  <div className="absolute -inset-4 bg-gradient-to-r from-blue-600/30 via-cyan-500/30 to-blue-400/30 rounded-full blur-2xl opacity-70 group-hover:opacity-100 transition duration-700 pointer-events-none" />
+                  
+                  {/* Transparent Glowing Concentric Blue Glass Disc Emblem */}
                   <img
-                    src="https://lh3.googleusercontent.com/d/1hnxm3eDhKN76sRiRpaATcaxJhHAyfrzV"
-                    alt="VP Media - Digital Elevation"
-                    className="w-full h-auto object-cover rounded-[1.55rem] hover:scale-[1.02] transition-transform duration-500"
+                    src={blueGlassDiscTransparent}
+                    alt="VP Media - Glowing Concentric Blue Glass Emblem"
+                    className="relative w-72 h-72 sm:w-88 sm:h-88 lg:w-96 lg:h-96 object-contain drop-shadow-[0_20px_35px_rgba(37,99,235,0.35)] transition-transform duration-500 group-hover:scale-105 select-none"
                     referrerPolicy="no-referrer"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = 'https://drive.google.com/uc?export=view&id=1hnxm3eDhKN76sRiRpaATcaxJhHAyfrzV';
-                    }}
                   />
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>

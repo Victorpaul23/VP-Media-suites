@@ -1,5 +1,6 @@
 import React from 'react';
 import { AGENCY_INFO } from '../data/agencyData';
+import { navigateTo } from '../utils/navigation';
 import { Sparkles, MessageSquare, Mail, ArrowUp } from 'lucide-react';
 
 export const Footer: React.FC = () => {
@@ -36,23 +37,35 @@ export const Footer: React.FC = () => {
             <h4 className="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">Solutions</h4>
             <ul className="space-y-2.5 text-xs">
               <li>
+                <a
+                  href="/GetQuote"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateTo('/GetQuote');
+                  }}
+                  className="text-amber-400 hover:text-white font-bold transition-colors flex items-center gap-1.5"
+                >
+                  <span>★ Build My Website</span>
+                </a>
+              </li>
+              <li>
                 <a href="#web-services" className="hover:text-amber-300 transition-colors">
                   Portfolio Websites (₦30,000)
                 </a>
               </li>
               <li>
                 <a href="#web-services" className="hover:text-amber-300 transition-colors">
-                  SMB Platforms (₦90,000) + Free AI Agent
+                  SMB Platforms (₦100,000) + Free AI Agent
                 </a>
               </li>
               <li>
-                <a href="#social-marketing" className="hover:text-amber-300 transition-colors">
-                  Social Growth & Short-Form Video Reels
+                <a href="#web-services" className="hover:text-amber-300 transition-colors">
+                  Enterprise & Custom Web Apps (₦500,000+)
                 </a>
               </li>
               <li>
-                <a href="#social-marketing" className="hover:text-amber-300 transition-colors">
-                  WhatsApp & Meta Conversion Funnels
+                <a href="#web-services" className="hover:text-amber-300 transition-colors">
+                  AI Chatbot & Database Integration
                 </a>
               </li>
             </ul>
@@ -69,7 +82,7 @@ export const Footer: React.FC = () => {
                 className="flex items-center gap-2 text-amber-300 hover:text-white font-bold transition-colors"
               >
                 <MessageSquare className="w-4 h-4 fill-amber-300 text-slate-950" />
-                <span>WhatsApp: {AGENCY_INFO.phone}</span>
+                <span>Send us a message on WhatsApp</span>
               </a>
               <a
                 href={`mailto:${AGENCY_INFO.email}`}

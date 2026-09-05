@@ -8,7 +8,7 @@ export const ContactSection: React.FC = () => {
     name: '',
     email: '',
     businessType: 'Small/Medium Business',
-    serviceNeeded: 'SMB Website (₦90,000)',
+    serviceNeeded: 'SMB Website (₦100,000)',
     message: '',
   });
 
@@ -54,14 +54,14 @@ Message: ${formData.message}`;
             </h2>
 
             <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-              Have a project in mind, need a custom software or web quote, or want to deploy automated WhatsApp ad funnels? Contact Victor Paul directly.
+              Have a project in mind, need a custom software or web quote, or want to deploy high-converting business websites? Contact us directly.
             </p>
 
             {/* Direct Contact Cards */}
             <div className="space-y-3.5 pt-2">
               <a
                 href={`https://wa.me/${AGENCY_INFO.whatsappNumber}?text=${encodeURIComponent(
-                  'Hi Victor, I want to talk about a digital media project for my business.'
+                  'Hi Victor, I want to talk about a website project for my business.'
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -75,7 +75,7 @@ Message: ${formData.message}`;
                     WhatsApp Direct
                   </div>
                   <div className="text-sm font-black text-slate-900 group-hover:text-blue-600 transition-colors">
-                    {AGENCY_INFO.phone}
+                    Send us a message on WhatsApp
                   </div>
                   <div className="text-[10px] text-slate-500">Fastest response • Available 24/7</div>
                 </div>
@@ -181,11 +181,10 @@ Message: ${formData.message}`;
                           className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 focus:outline-none focus:border-blue-500"
                         >
                           <option value="Portfolio Website (₦30,000)">Portfolio Website (₦30,000)</option>
-                          <option value="SMB Website (₦90,000)">SMB Website (₦90,000)</option>
+                          <option value="SMB Website (₦100,000)">SMB Website (₦100,000)</option>
                           <option value="Enterprise Website (₦500,000+)">Enterprise Website (₦500k+)</option>
-                          <option value="Elite Social Marketing">Elite Social Marketing</option>
-                          <option value="WhatsApp/Meta Ads">WhatsApp / Meta Ads</option>
-                          <option value="Video Reels Editing">Video Reels Editing</option>
+                          <option value="Custom E-Commerce Platform">Custom E-Commerce Platform</option>
+                          <option value="Custom Web App & SaaS">Custom Web App & SaaS</option>
                         </select>
                       </div>
                     </div>
@@ -207,7 +206,7 @@ Message: ${formData.message}`;
                       className="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md shadow-blue-600/20 flex items-center justify-center gap-2 hover:scale-[1.01] transition-all"
                     >
                       <Send className="w-4 h-4 fill-white text-white" />
-                      <span>Submit & Chat Victor On WhatsApp</span>
+                      <span>Send us a message on WhatsApp</span>
                     </button>
                   </form>
                 )}

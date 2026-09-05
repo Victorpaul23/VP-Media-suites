@@ -31,10 +31,12 @@ export const PortfolioShowcase: React.FC = () => {
   const filteredItems =
     activeCategory === 'all'
       ? PORTFOLIO_ITEMS
+      : activeCategory === 'live'
+      ? PORTFOLIO_ITEMS.filter((item) => Boolean(item.demoUrl))
       : PORTFOLIO_ITEMS.filter((item) => item.category === activeCategory);
 
   // Specifically website items for slider
-  const websiteItems = PORTFOLIO_ITEMS.filter((item) => item.category === 'website');
+  const websiteItems = PORTFOLIO_ITEMS;
 
   // Reset slider index if filtered items change
   useEffect(() => {
@@ -102,7 +104,7 @@ export const PortfolioShowcase: React.FC = () => {
               Real Builds. <span className="text-blue-gradient">Live Production Samples.</span>
             </h2>
             <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-              Browse our high-performing website platforms, portfolios, and marketing campaigns built for clients with real live URLs.
+              Browse our high-performing website platforms, portfolios, and web applications built for clients with real live URLs.
             </p>
           </div>
 
@@ -110,19 +112,23 @@ export const PortfolioShowcase: React.FC = () => {
           <div className="flex flex-wrap items-center gap-2">
             {/* Category Filter Pills */}
             <div className="flex flex-wrap gap-1 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 shadow-xs">
-              {['all', 'website', 'social', 'video', 'branding'].map((cat) => (
+              {[
+                { id: 'all', label: 'All Builds' },
+                { id: 'live', label: 'Live Vercel Sites' },
+                { id: 'website', label: 'Web Applications' },
+              ].map((cat) => (
                 <button
-                  key={cat}
+                  key={cat.id}
                   onClick={() => {
-                    setActiveCategory(cat);
+                    setActiveCategory(cat.id);
                   }}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold capitalize transition-all ${
-                    activeCategory === cat
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                    activeCategory === cat.id
                       ? 'bg-blue-600 text-white font-black shadow-xs'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
                   }`}
                 >
-                  {cat === 'all' ? 'All Builds' : cat}
+                  {cat.label}
                 </button>
               ))}
             </div>

@@ -10,10 +10,10 @@ export const AGENCY_INFO = {
   whatsappNumber: '2348077021080',
   targetAudience: 'Young entrepreneurs, startups, creatives, freelancers, and businesses aged 23–40',
   stats: [
-    { label: 'Client Satisfaction', value: '99.8%' },
+    { label: 'Client Satisfaction', value: '100%' },
     { label: 'On-Time Project Delivery', value: '100%' },
     { label: 'High Performing Websites', value: 'Numerous' },
-    { label: 'Avg ROAS on Ads', value: '4.8x' },
+    { label: 'Delivery Time', value: '5–7 Days' },
   ]
 };
 
@@ -26,6 +26,7 @@ export const WEBSITE_TIERS: WebsiteTier[] = [
     numericPrice: 30000,
     targetAudience: 'Creatives, Freelancers & Professionals',
     hosting: 'Hosted fast on Vercel',
+    turnaround: '3–5 Days',
     features: [
       'High-converting Single / Multi-section Portfolio Display',
       'Name, Bio, Service Offer & Showcase Catalogue',
@@ -43,11 +44,12 @@ export const WEBSITE_TIERS: WebsiteTier[] = [
     id: 'smb',
     title: 'Small & Medium Business',
     tagline: 'Full conversion-engineered website setup to turn visitors into paying customers.',
-    price: '₦90,000',
-    numericPrice: 90000,
+    price: '₦100,000',
+    numericPrice: 100000,
     popular: true,
     targetAudience: 'Growing SMBs, Agencies & Product Brands',
     hosting: 'Custom Domain Web Hosting (yourbusiness.com)',
+    turnaround: '5–7 Days',
     features: [
       'Interactive Product / Service Display & Catalogues',
       'Client Reviews & Trust Testimonial Section',
@@ -71,6 +73,7 @@ export const WEBSITE_TIERS: WebsiteTier[] = [
     numericPrice: 500000,
     targetAudience: 'E-commerce, Tech Startups, SaaS, Logistics & Large Chains',
     hosting: 'Scalable Cloud Infrastructure (AWS / Vercel Enterprise)',
+    turnaround: '2–3 Weeks',
     features: [
       'Custom Multi-vendor / E-Commerce Payment Gateways',
       'Custom User Authentication, Dashboards & Databases',
@@ -224,33 +227,23 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
   },
   {
     id: 'p5',
-    title: 'Luxe Fashion Social Media Campaign',
-    category: 'social',
-    clientName: 'Luxe Wear Nigeria',
-    image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=80',
-    description: '30-day viral IG Reels & TikTok ad strategy resulting in massive organic engagement and click-to-WhatsApp orders.',
-    tags: ['Social Media Marketing', 'Elite Tier', 'Click-to-WhatsApp Ads'],
-    metrics: '1.4M Organic Views',
+    title: 'Luxe Storefront & Ordering Web App',
+    category: 'website',
+    clientName: 'Luxe Fashion House',
+    image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1000&q=80',
+    description: 'High-speed e-commerce showcase with automated WhatsApp checkout and seamless mobile payment flow.',
+    tags: ['E-Commerce Platform', 'Instant WhatsApp Checkout', 'Vercel Hosted'],
+    metrics: '3.4x Faster Loading Speed',
   },
   {
     id: 'p6',
-    title: 'Creator Video Reels Transformation',
-    category: 'video',
-    clientName: 'Coach Mark Fitness',
-    image: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1000&q=80',
-    description: 'Editing raw gym footage into dynamic, high-retention Instagram Reels with animated captions and sound design.',
-    tags: ['Video Editing', 'Reels & TikTok', 'Sound FX'],
-    metrics: '85% Average Retention Rate',
-  },
-  {
-    id: 'p7',
-    title: 'Zest Food Delivery Campaign',
-    category: 'branding',
-    clientName: 'Zest Gourmet Kitchen',
-    image: 'https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&w=1000&q=80',
-    description: 'Complete digital branding, social media content strategy, and target WhatsApp ad campaigns.',
-    tags: ['Digital Advertising', 'WhatsApp Ads', 'Food Brand'],
-    metrics: '340 Orders in 14 Days',
+    title: 'PrimeFit Membership & Booking Portal',
+    category: 'website',
+    clientName: 'PrimeFit Training Studio',
+    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1000&q=80',
+    description: 'Interactive web platform featuring class schedule timetable, automated WhatsApp lead intake, and member management.',
+    tags: ['SMB Web Application', 'Interactive Schedules', 'Mobile Responsive'],
+    metrics: '120+ Monthly Online Bookings',
   },
 ];
 
@@ -261,9 +254,9 @@ export const TESTIMONIALS: Testimonial[] = [
     role: 'Founder & CEO',
     company: 'Prime Tech Solutions',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-    content: 'VP Media built our business website in record time. The ₦90,000 SMB package included an AI Chatbot that answers client questions automatically on our site. Victor is sharp, responsive, and truly customer-centric!',
+    content: 'VP Media built our business website in record time. The ₦100,000 SMB package included an AI Chatbot that answers client questions automatically on our site. Victor is sharp, responsive, and truly customer-centric!',
     rating: 5,
-    serviceUsed: 'SMB Website (₦90,000)',
+    serviceUsed: 'SMB Website (₦100,000)',
     resultsBadge: '4x Inquiries Generated',
   },
   {
@@ -280,25 +273,25 @@ export const TESTIMONIALS: Testimonial[] = [
   {
     id: 't3',
     name: 'Kelvin Brooks',
-    role: 'Marketing Manager',
+    role: 'Managing Director',
     company: 'Urban Threads Closet',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
-    content: 'Their Elite Social Media Marketing & WhatsApp Ads turned our Instagram page into a sales engine. We went from struggling to get DMs to closing 15+ orders daily. Victor’s team never misses a deadline!',
+    content: 'VP Media rebuilt our e-commerce platform with custom payment gateways and lightning-fast speed. We went from struggling with clunky ordering to closing sales effortlessly. Victor delivered exactly within our 5-7 day timeline!',
     rating: 5,
-    serviceUsed: 'Elite Social Media & Ads',
-    resultsBadge: '₦3.2M Revenue in 30 Days',
+    serviceUsed: 'E-Commerce Platform',
+    resultsBadge: '₦3.2M Online Sales in 30 Days',
   },
 ];
 
 export const FAQS: FaqItem[] = [
   {
     question: 'How fast will my website be delivered?',
-    answer: 'We pride ourselves on fast & optimal delivery! Portfolio websites (₦30,000) are typically completed in 3–5 days. Small & Medium Business websites (₦90,000) are ready in 7–10 days. Enterprise builds vary depending on custom complexity.',
+    answer: 'We pride ourselves on fast & optimal delivery! Portfolio websites (₦30,000) are typically completed in 3–5 days. Small & Medium Business websites (₦100,000) are ready in 5–7 days. Enterprise builds vary depending on custom complexity.',
     category: 'websites',
   },
   {
     question: 'What is included in the FREE AI Chatbot integration for SMB websites?',
-    answer: 'When you order the ₦90,000 SMB website, we train an AI chatbot specifically on your products, services, FAQs, and pricing. It greets visitors 24/7, answers their questions intelligently, and guides them directly to submit a contact form or DM you on WhatsApp!',
+    answer: 'When you order the ₦100,000 SMB website, we train an AI chatbot specifically on your products, services, FAQs, and pricing. It greets visitors 24/7, answers their questions intelligently, and guides them directly to submit a contact form or send us a message on WhatsApp!',
     category: 'websites',
   },
   {
@@ -308,13 +301,13 @@ export const FAQS: FaqItem[] = [
   },
   {
     question: 'How do the WhatsApp Direct Inquiry links work?',
-    answer: 'When you click any service button on our site, it opens WhatsApp with a pre-filled message directly to Victor Paul (08036301966) specifying your exact plan request so we can jump straight to building!',
+    answer: 'When you click any service button on our site, it opens WhatsApp with a pre-filled message directly to our team specifying your exact plan request so we can jump straight to building!',
     category: 'payment',
   },
   {
-    question: 'Can you handle both social media graphics and video reel editing?',
-    answer: 'Yes! Our Elite and Premium Social Media Marketing tiers include high-converting graphics, carousel design, reel scripting, video editing, and full ad campaign setup on Meta (Facebook/IG) & WhatsApp.',
-    category: 'social',
+    question: 'Do you offer custom web applications and e-commerce platforms?',
+    answer: 'Yes! In addition to our Portfolio (₦30,000) and SMB (₦100,000) packages, our Enterprise & Custom tier delivers bespoke software, multi-vendor e-commerce hubs, SaaS interfaces, user dashboards, and custom payment integrations.',
+    category: 'websites',
   },
   {
     question: 'What are the payment terms and setup process?',

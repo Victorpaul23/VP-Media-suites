@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { AGENCY_INFO, WHY_WORK_WITH_US } from '../data/agencyData';
 import { Zap, Heart, RefreshCw, Sparkles, CheckCircle, ShieldCheck, ArrowRight, Star, Flame, Award } from 'lucide-react';
+import { navigateTo } from '../utils/navigation';
 
 export const WhyUs: React.FC = () => {
   const getIcon = (iconName: string) => {
@@ -217,14 +218,14 @@ export const WhyUs: React.FC = () => {
             <motion.a
               whileHover={{ scale: 1.07 }}
               whileTap={{ scale: 0.95 }}
-              href={`https://wa.me/${AGENCY_INFO.whatsappNumber}?text=${encodeURIComponent(
-                'Hi Victor, I read your commitment on the website and I want to start a project with VP Media!'
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="shrink-0 px-7 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-xl shadow-blue-600/30 transition-all flex items-center gap-2"
+              href="/GetQuote"
+              onClick={(e) => {
+                e.preventDefault();
+                navigateTo('/GetQuote');
+              }}
+              className="shrink-0 px-7 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-xl shadow-blue-600/30 transition-all flex items-center gap-2 cursor-pointer"
             >
-              <span>Launch Your Project</span>
+              <span>Build My Website</span>
               <ArrowRight className="w-4 h-4 text-white" />
             </motion.a>
           </div>

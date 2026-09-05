@@ -3,36 +3,48 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { WhyUs } from './components/WhyUs';
 import { WebsiteServices } from './components/WebsiteServices';
-import { SocialMediaServices } from './components/SocialMediaServices';
 import { PortfolioShowcase } from './components/PortfolioShowcase';
 import { ProcessTimeline } from './components/ProcessTimeline';
 import { Testimonials } from './components/Testimonials';
 import { FaqSection } from './components/FaqSection';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
-import { ConsultationModal } from './components/ConsultationModal';
+import { GetQuotePage } from './pages/GetQuotePage';
+import { useCurrentPath, navigateTo } from './utils/navigation';
 
 export default function App() {
-  const [isConsultationOpen, setIsConsultationOpen] = useState(false);
+  const currentPath = useCurrentPath();
+  const isGetQuote =
+    currentPath.toLowerCase().startsWith('/getquote') ||
+    currentPath.toLowerCase().startsWith('/get-quote');
+
+  if (isGetQuote) {
+    return <GetQuotePage />;
+  }
+
+  const handleOpenQuote = (tierId?: string) => {
+    if (tierId) {
+      navigateTo(`/GetQuote?tier=${tierId}`);
+    } else {
+      navigateTo('/GetQuote');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans antialiased selection:bg-blue-500 selection:text-white">
       {/* Sticky Header */}
-      <Navbar onOpenConsultation={() => setIsConsultationOpen(true)} />
+      <Navbar onOpenConsultation={() => handleOpenQuote()} />
 
       {/* Main Page Content */}
       <main>
         {/* Hero Section */}
-        <Hero onOpenConsultation={() => setIsConsultationOpen(true)} />
+        <Hero onOpenConsultation={() => handleOpenQuote()} />
 
         {/* Why Work With VP Media */}
         <WhyUs />
 
-        {/* Website Packages (₦30k Portfolio, ₦90k SMB, ₦500k Enterprise) */}
-        <WebsiteServices onOpenConsultation={() => setIsConsultationOpen(true)} />
-
-        {/* Social Media Marketing, Paid Ads & Video Editing */}
-        <SocialMediaServices />
+        {/* Website Packages (₦30k Portfolio, ₦100k SMB, ₦500k Enterprise) */}
+        <WebsiteServices onOpenConsultation={(tierId) => handleOpenQuote(tierId)} />
 
         {/* Web Design & Projects Showcase */}
         <PortfolioShowcase />
@@ -52,12 +64,7 @@ export default function App() {
 
       {/* Footer */}
       <Footer />
-
-      {/* Quick Consultation Modal */}
-      <ConsultationModal
-        isOpen={isConsultationOpen}
-        onClose={() => setIsConsultationOpen(false)}
-      />
     </div>
   );
 }
+

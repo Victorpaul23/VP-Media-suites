@@ -7,6 +7,7 @@ export interface WebsiteTier {
   popular?: boolean;
   targetAudience: string;
   hosting: string;
+  turnaround?: string;
   features: string[];
   freeBonuses: string[];
   whatsAppMessage: string;

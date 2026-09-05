@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { WEBSITE_TIERS, AGENCY_INFO } from '../data/agencyData';
+import { navigateTo } from '../utils/navigation';
 import { AuroraCard } from './AuroraCard';
 import {
   Globe,
@@ -13,19 +15,30 @@ import {
   Bot,
   BarChart,
   Cpu,
+  FileText,
+  Clock,
+  ChevronDown,
 } from 'lucide-react';
 
 interface WebsiteServicesProps {
-  onOpenConsultation: () => void;
+  onOpenConsultation?: (tierId?: string) => void;
 }
 
 export const WebsiteServices: React.FC<WebsiteServicesProps> = ({ onOpenConsultation }) => {
   const [selectedCurrency, setSelectedCurrency] = useState<'NGN' | 'USD'>('NGN');
+  const [expandedTiers, setExpandedTiers] = useState<Record<string, boolean>>({});
+
+  const toggleTier = (id: string) => {
+    setExpandedTiers((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   const formatPrice = (priceStr: string, numericVal: number) => {
     if (selectedCurrency === 'USD') {
       if (numericVal >= 500000) return '$350+ USD';
-      if (numericVal === 90000) return '$65 USD';
+      if (numericVal === 100000) return '$70 USD';
       if (numericVal === 30000) return '$22 USD';
     }
     return priceStr;
@@ -81,8 +94,9 @@ export const WebsiteServices: React.FC<WebsiteServicesProps> = ({ onOpenConsulta
             const whatsAppUrl = `https://wa.me/${AGENCY_INFO.whatsappNumber}?text=${encodeURIComponent(
               tier.whatsAppMessage
             )}`;
+            const isExpanded = !!expandedTiers[tier.id];
 
-            // Popular Tier (SMB - ₦90k) gets Gold Aurora Card Wrapper
+            // Popular Tier (SMB - ₦100k) gets Gold Aurora Card Wrapper
             if (tier.popular) {
               return (
                 <div key={tier.id} className="aurora-card-wrapper h-full">
@@ -107,46 +121,87 @@ export const WebsiteServices: React.FC<WebsiteServicesProps> = ({ onOpenConsulta
                           </span>
                           <span className="text-xs text-slate-500 font-medium">/ complete build</span>
                         </div>
-                      </div>
-
-                      {/* Hosting Info */}
-                      <div className="mt-4 p-3 rounded-xl bg-amber-100/60 border border-amber-300 text-xs text-amber-900 font-semibold flex items-center gap-2">
-                        <Globe className="w-4 h-4 shrink-0 text-amber-700" />
-                        <span>{tier.hosting}</span>
-                      </div>
-
-                      {/* Features List */}
-                      <div className="mt-6 space-y-3">
-                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                          Architecture & Features:
-                        </span>
-                        {tier.features.map((feat, i) => (
-                          <div key={i} className="flex items-start gap-2.5 text-xs text-slate-700 font-medium">
-                            <div className="mt-0.5 p-0.5 rounded-full bg-amber-100 text-amber-800 shrink-0">
-                              <Check className="w-3 h-3" />
-                            </div>
-                            <span>{feat}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* FREE Bonuses Section */}
-                      <div className="mt-6 p-3.5 rounded-xl bg-amber-100/80 border border-amber-300 space-y-2">
-                        <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
-                          <Gift className="w-4 h-4 text-amber-700" />
-                          <span>FREE Included Tech Bonuses:</span>
+                        {/* Turnaround SLA */}
+                        <div className="pt-1">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100/90 border border-blue-200 text-blue-900 text-xs font-bold shadow-2xs">
+                            <Clock className="w-3.5 h-3.5 text-blue-700" />
+                            <span>Time frame: 5–7 Days</span>
+                          </span>
                         </div>
-                        {tier.freeBonuses.map((bonus, i) => (
-                          <div key={i} className="flex items-start gap-2 text-[11px] text-amber-950 font-medium">
-                            <span className="text-amber-700 font-bold">•</span>
-                            <span>{bonus}</span>
-                          </div>
-                        ))}
                       </div>
+
+                      {/* Dropdown Toggle for Features & Details */}
+                      <button
+                        type="button"
+                        onClick={() => toggleTier(tier.id)}
+                        className={`w-full mt-5 py-2.5 px-3.5 rounded-xl border text-xs font-bold flex items-center justify-between transition-all cursor-pointer ${
+                          isExpanded
+                            ? 'bg-amber-200/70 border-amber-400 text-amber-950 shadow-2xs'
+                            : 'bg-amber-100/60 hover:bg-amber-100 border-amber-300 text-amber-900'
+                        }`}
+                      >
+                        <span className="flex items-center gap-1.5">
+                          <span>{isExpanded ? 'Hide package details' : 'View full package details'}</span>
+                          <span className="text-[10px] opacity-75 font-normal">({tier.features.length} items + gifts)</span>
+                        </span>
+                        <ChevronDown
+                          className={`w-4 h-4 transition-transform duration-300 ${
+                            isExpanded ? 'rotate-180 text-amber-950' : 'text-amber-800'
+                          }`}
+                        />
+                      </button>
+
+                      {/* Collapsible Content: Hosting, Architecture & Free Bonuses */}
+                      <AnimatePresence>
+                        {isExpanded && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.28, ease: 'easeInOut' }}
+                            className="overflow-hidden space-y-4 pt-4"
+                          >
+                            {/* Hosting Info */}
+                            <div className="p-3 rounded-xl bg-amber-100/60 border border-amber-300 text-xs text-amber-900 font-semibold flex items-center gap-2">
+                              <Globe className="w-4 h-4 shrink-0 text-amber-700" />
+                              <span>{tier.hosting}</span>
+                            </div>
+
+                            {/* Features List */}
+                            <div className="space-y-3">
+                              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                Architecture & Features:
+                              </span>
+                              {tier.features.map((feat, i) => (
+                                <div key={i} className="flex items-start gap-2.5 text-xs text-slate-700 font-medium">
+                                  <div className="mt-0.5 p-0.5 rounded-full bg-amber-100 text-amber-800 shrink-0">
+                                    <Check className="w-3 h-3" />
+                                  </div>
+                                  <span>{feat}</span>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* FREE Bonuses Section */}
+                            <div className="p-3.5 rounded-xl bg-amber-100/80 border border-amber-300 space-y-2">
+                              <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
+                                <Gift className="w-4 h-4 text-amber-700" />
+                                <span>FREE Included Tech Bonuses:</span>
+                              </div>
+                              {tier.freeBonuses.map((bonus, i) => (
+                                <div key={i} className="flex items-start gap-2 text-[11px] text-amber-950 font-medium">
+                                  <span className="text-amber-700 font-bold">•</span>
+                                  <span>{bonus}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
 
                     {/* CTA Button */}
-                    <div className="mt-8 pt-4 border-t border-amber-200 space-y-2">
+                    <div className="mt-6 pt-4 border-t border-amber-200 space-y-2">
                       <a
                         href={whatsAppUrl}
                         target="_blank"
@@ -154,11 +209,21 @@ export const WebsiteServices: React.FC<WebsiteServicesProps> = ({ onOpenConsulta
                         className="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs tracking-wide shadow-md shadow-blue-600/20 flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
                       >
                         <MessageSquare className="w-4 h-4 fill-white text-white" />
-                        <span>Order SMB Platform (₦90,000)</span>
+                        <span>Order SMB Platform (₦100,000)</span>
                       </a>
-                      <p className="text-[10px] text-center text-slate-500">
-                        Fast turnaround • Direct WhatsApp onboarding with Victor
-                      </p>
+                      <div className="flex items-center justify-between text-[11px] px-1 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (onOpenConsultation) onOpenConsultation(tier.id);
+                            else navigateTo(`/GetQuote?tier=${tier.id}`);
+                          }}
+                          className="text-amber-900 hover:text-amber-950 font-bold underline cursor-pointer"
+                        >
+                          Customize quote (/GetQuote) →
+                        </button>
+                        <span className="text-slate-400">Direct WhatsApp</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -189,40 +254,82 @@ export const WebsiteServices: React.FC<WebsiteServicesProps> = ({ onOpenConsulta
                         {formatPrice(tier.price, tier.numericPrice)}
                       </span>
                     </div>
+                    {tier.turnaround && (
+                      <div className="pt-1">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-[11px] font-semibold">
+                          <Clock className="w-3 h-3 text-slate-500" />
+                          <span>Time frame: {tier.turnaround}</span>
+                        </span>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Features List */}
-                  <div className="mt-6 space-y-3">
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                      Key Highlights:
+                  {/* Dropdown Toggle for Features & Details */}
+                  <button
+                    type="button"
+                    onClick={() => toggleTier(tier.id)}
+                    className={`w-full mt-5 py-2.5 px-3.5 rounded-xl border text-xs font-bold flex items-center justify-between transition-all cursor-pointer ${
+                      isExpanded
+                        ? 'bg-blue-50 border-blue-200 text-blue-900 shadow-2xs'
+                        : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
+                    }`}
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <span>{isExpanded ? 'Hide package details' : 'View full package details'}</span>
+                      <span className="text-[10px] opacity-75 font-normal">({tier.features.length} items + gifts)</span>
                     </span>
-                    {tier.features.map((feat, i) => (
-                      <div key={i} className="flex items-start gap-2.5 text-xs text-slate-700">
-                        <div className="mt-0.5 p-0.5 rounded-full bg-blue-100 text-blue-700 shrink-0">
-                          <Check className="w-3 h-3" />
-                        </div>
-                        <span>{feat}</span>
-                      </div>
-                    ))}
-                  </div>
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform duration-300 ${
+                        isExpanded ? 'rotate-180 text-blue-600' : 'text-slate-500'
+                      }`}
+                    />
+                  </button>
 
-                  {/* FREE Bonuses */}
-                  <div className="mt-6 p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-amber-800">
-                      <Gift className="w-4 h-4 text-amber-600" />
-                      <span>Free Launch Gift:</span>
-                    </div>
-                    {tier.freeBonuses.map((bonus, i) => (
-                      <div key={i} className="flex items-start gap-2 text-[11px] text-slate-700">
-                        <span className="text-amber-600 font-bold">•</span>
-                        <span>{bonus}</span>
-                      </div>
-                    ))}
-                  </div>
+                  {/* Collapsible Content: Features & Free Bonuses */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.28, ease: 'easeInOut' }}
+                        className="overflow-hidden space-y-4 pt-4"
+                      >
+                        {/* Features List */}
+                        <div className="space-y-3">
+                          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                            Key Highlights:
+                          </span>
+                          {tier.features.map((feat, i) => (
+                            <div key={i} className="flex items-start gap-2.5 text-xs text-slate-700">
+                              <div className="mt-0.5 p-0.5 rounded-full bg-blue-100 text-blue-700 shrink-0">
+                                <Check className="w-3 h-3" />
+                              </div>
+                              <span>{feat}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* FREE Bonuses */}
+                        <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                          <div className="flex items-center gap-1.5 text-xs font-bold text-amber-800">
+                            <Gift className="w-4 h-4 text-amber-600" />
+                            <span>Free Launch Gift:</span>
+                          </div>
+                          {tier.freeBonuses.map((bonus, i) => (
+                            <div key={i} className="flex items-start gap-2 text-[11px] text-slate-700">
+                              <span className="text-amber-600 font-bold">•</span>
+                              <span>{bonus}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* CTA Button */}
-                <div className="mt-8 pt-4 border-t border-slate-100 space-y-2">
+                <div className="mt-6 pt-4 border-t border-slate-100 space-y-2">
                   <a
                     href={whatsAppUrl}
                     target="_blank"
@@ -236,13 +343,49 @@ export const WebsiteServices: React.FC<WebsiteServicesProps> = ({ onOpenConsulta
                         : 'Discuss Enterprise Project'}
                     </span>
                   </a>
-                  <p className="text-[10px] text-center text-slate-500">
-                    Direct pre-filled WhatsApp message to Victor
-                  </p>
+                  <div className="flex items-center justify-between text-[11px] px-1 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (onOpenConsultation) onOpenConsultation(tier.id);
+                        else navigateTo(`/GetQuote?tier=${tier.id}`);
+                      }}
+                      className="text-blue-600 hover:text-blue-800 font-bold underline cursor-pointer"
+                    >
+                      Customize quote (/GetQuote) →
+                    </button>
+                    <span className="text-slate-400">Direct WhatsApp</span>
+                  </div>
                 </div>
               </div>
             );
           })}
+        </div>
+
+        {/* Customized Scope Banner */}
+        <div className="mt-12 p-6 sm:p-7 rounded-3xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-xs">
+          <div className="space-y-1 text-center sm:text-left">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-bold">
+              <Sparkles className="w-3 h-3 text-amber-600" />
+              <span>CUSTOM SPECIFICATIONS</span>
+            </div>
+            <h4 className="text-base font-black text-slate-900">Need a specialized package or bespoke web app?</h4>
+            <p className="text-xs text-slate-500">
+              Configure your exact deliverable requirements, preferred tier, and timeline using our dedicated proposal builder.
+            </p>
+          </div>
+          <a
+            href="/GetQuote"
+            onClick={(e) => {
+              e.preventDefault();
+              navigateTo('/GetQuote');
+            }}
+            className="px-6 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shrink-0 flex items-center gap-2 shadow-md shadow-blue-600/20 transition-all hover:scale-[1.02] cursor-pointer"
+          >
+            <FileText className="w-4 h-4 text-white" />
+            <span>Build My Website</span>
+            <ArrowRight className="w-4 h-4 text-white" />
+          </a>
         </div>
       </div>
     </section>

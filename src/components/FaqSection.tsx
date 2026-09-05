@@ -27,7 +27,7 @@ export const FaqSection: React.FC = () => {
             Frequently Asked <span className="text-blue-gradient">Questions</span>
           </h2>
           <p className="text-slate-600 text-sm leading-relaxed">
-            Everything you need to know regarding our web architecture, AI sales assistant deployment, ad campaign management, and turnaround SLAs.
+            Everything you need to know regarding our web architecture, AI sales assistant deployment, custom web platforms, and turnaround SLAs.
           </p>
 
           {/* Search Bar */}
@@ -37,7 +37,7 @@ export const FaqSection: React.FC = () => {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search knowledge base (e.g. delivery, ₦90k, AI chatbot)..."
+              placeholder="Search knowledge base (e.g. delivery, ₦100k, AI chatbot)..."
               className="w-full pl-11 pr-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 shadow-xs"
             />
           </div>
