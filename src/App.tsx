@@ -14,9 +14,12 @@ import { useCurrentPath, navigateTo } from './utils/navigation';
 
 export default function App() {
   const currentPath = useCurrentPath();
+  const lowerPath = currentPath.toLowerCase();
   const isGetQuote =
-    currentPath.toLowerCase().startsWith('/getquote') ||
-    currentPath.toLowerCase().startsWith('/get-quote');
+    lowerPath.startsWith('/getquote') ||
+    lowerPath.startsWith('/get-quote') ||
+    lowerPath.startsWith('/get_quote') ||
+    lowerPath.startsWith('/quote');
 
   if (isGetQuote) {
     return <GetQuotePage />;

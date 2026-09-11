@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VP Media Suites</title>
+    <script>
+      // Single Page Apps for GitHub Pages, S3, or static hosts that fall back to 404.html
+      // Preserves path, query, and hash when redirecting back to index.html
+      var path = window.location.pathname;
+      var search = window.location.search;
+      var hash = window.location.hash;
+      // If the path contains getquote or quote, redirect seamlessly
+      var redirectUrl = '/' + (path.startsWith('/') ? path.slice(1) : path) + search + hash;
+      window.location.replace('/' + (path && path !== '/' ? '?p=' + encodeURIComponent(path + search + hash) : ''));
+    </script>
+  </head>
+  <body>
+    <p>Redirecting to <a href="/">VP Media Suites</a>...</p>
+  </body>
+</html>
