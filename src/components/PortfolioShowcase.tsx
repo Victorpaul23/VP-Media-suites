@@ -101,7 +101,7 @@ export const PortfolioShowcase: React.FC = () => {
               <span>VERIFIED BUILD CATALOGUE & SHOWCASE</span>
             </div>
             <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-              Real Builds. <span className="text-blue-gradient">Live Production Samples.</span>
+              View Some <span className="text-blue-600">Live Websites</span> we've built
             </h2>
             <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
               Browse our high-performing website platforms, portfolios, and web applications built for clients with real live URLs.

@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { AGENCY_INFO } from '../data/agencyData';
 import { navigateTo } from '../utils/navigation';
-import blueGlassDiscTransparent from '../assets/images/blue_glass_disc_transparent.png';
+import heroImage from '../assets/images/hero_image.png';
 import {
   Sparkles,
   MessageSquare,
@@ -43,8 +43,9 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation }) => {
 
             {/* Main Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.18] text-slate-900">
-              <span className="block tracking-tight text-slate-900 uppercase mb-3 font-extrabold text-3xl sm:text-4xl lg:text-5xl">
-                WEBSITE AGENCY
+              <span className="block tracking-tight uppercase mb-3 font-extrabold text-4xl sm:text-5xl lg:text-6xl">
+                <span className="text-slate-900">WEBSITE </span>
+                <span className="text-blue-600">AGENCY</span>
               </span>
               <span className="relative inline-block font-auriol font-semibold text-3xl sm:text-4xl lg:text-5xl text-slate-900 leading-snug">
                 Building the <span className="text-blue-600 font-bold">website</span> you{' '}
@@ -159,10 +160,10 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation }) => {
                   {/* Subtle outer neon ambient aura */}
                   <div className="absolute -inset-4 bg-gradient-to-r from-blue-600/30 via-cyan-500/30 to-blue-400/30 rounded-full blur-2xl opacity-70 group-hover:opacity-100 transition duration-700 pointer-events-none" />
                   
-                  {/* Transparent Glowing Concentric Blue Glass Disc Emblem */}
+                  {/* Hero Emblem Image */}
                   <img
-                    src={blueGlassDiscTransparent}
-                    alt="VP Media - Glowing Concentric Blue Glass Emblem"
+                    src={heroImage}
+                    alt="VP Media - Premium Glass Emblem"
                     className="relative w-72 h-72 sm:w-88 sm:h-88 lg:w-96 lg:h-96 object-contain drop-shadow-[0_20px_35px_rgba(37,99,235,0.35)] transition-transform duration-500 group-hover:scale-105 select-none"
                     referrerPolicy="no-referrer"
                   />
