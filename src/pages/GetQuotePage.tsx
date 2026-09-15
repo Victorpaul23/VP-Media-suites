@@ -137,6 +137,12 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
     const url = `https://wa.me/${AGENCY_INFO.whatsappNumber}?text=${encodeURIComponent(
       whatsappMessage
     )}`;
+    <!-- X conversion tracking event code -->
+<script type="text/javascript">
+  // Insert X Event ID
+  twq('event', 'tw-rf672-rf8d1', {});
+</script>
+<!-- End X conversion tracking event code -->
     window.open(url, '_blank');
     setIsSubmitted(true);
   };
