@@ -125,7 +125,7 @@ export const WebsiteServices: React.FC<WebsiteServicesProps> = ({ onOpenConsulta
                         <div className="pt-1">
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100/90 border border-blue-200 text-blue-900 text-xs font-bold shadow-2xs">
                             <Clock className="w-3.5 h-3.5 text-blue-700" />
-                            <span>Time frame: 5–7 Days</span>
+                            <span>fast delivery timeline</span>
                           </span>
                         </div>
                       </div>
@@ -258,7 +258,7 @@ export const WebsiteServices: React.FC<WebsiteServicesProps> = ({ onOpenConsulta
                       <div className="pt-1">
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-[11px] font-semibold">
                           <Clock className="w-3 h-3 text-slate-500" />
-                          <span>Time frame: {tier.turnaround}</span>
+                          <span>{tier.turnaround}</span>
                         </span>
                       </div>
                     )}

@@ -44,7 +44,7 @@ export const ProcessTimeline: React.FC = () => {
             Our 4-Step <span className="text-blue-gradient">Precision Process</span>
           </h2>
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Zero friction, zero delays. From initial strategic kickoff to live market launch in 3 to 10 business days guaranteed.
+            Zero friction, zero delays. From initial strategic kickoff to live market launch. Typical project timeline: 3–5 business days, depending on scope and availability.
           </p>
         </div>
 

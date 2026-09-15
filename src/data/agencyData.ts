@@ -13,7 +13,7 @@ export const AGENCY_INFO = {
     { label: 'Client Satisfaction', value: '100%' },
     { label: 'On-Time Project Delivery', value: '100%' },
     { label: 'High Performing Websites', value: 'Numerous' },
-    { label: 'Delivery Time', value: '5–7 Days' },
+    { label: 'Delivery Timeline', value: 'fast delivery timeline' },
   ]
 };
 
@@ -26,7 +26,7 @@ export const WEBSITE_TIERS: WebsiteTier[] = [
     numericPrice: 30000,
     targetAudience: 'Creatives, Freelancers & Professionals',
     hosting: 'Hosted fast on Vercel',
-    turnaround: '3–5 Days',
+    turnaround: 'fast delivery timeline',
     features: [
       'High-converting Single / Multi-section Portfolio Display',
       'Name, Bio, Service Offer & Showcase Catalogue',
@@ -49,7 +49,7 @@ export const WEBSITE_TIERS: WebsiteTier[] = [
     popular: true,
     targetAudience: 'Growing SMBs, Agencies & Product Brands',
     hosting: 'Custom Domain Web Hosting (yourbusiness.com)',
-    turnaround: '5–7 Days',
+    turnaround: 'fast delivery timeline',
     features: [
       'Interactive Product / Service Display & Catalogues',
       'Client Reviews & Trust Testimonial Section',
@@ -73,7 +73,7 @@ export const WEBSITE_TIERS: WebsiteTier[] = [
     numericPrice: 500000,
     targetAudience: 'E-commerce, Tech Startups, SaaS, Logistics & Large Chains',
     hosting: 'Scalable Cloud Infrastructure (AWS / Vercel Enterprise)',
-    turnaround: '2–3 Weeks',
+    turnaround: 'fast delivery timeline',
     features: [
       'Custom Multi-vendor / E-Commerce Payment Gateways',
       'Custom User Authentication, Dashboards & Databases',
@@ -276,7 +276,7 @@ export const TESTIMONIALS: Testimonial[] = [
     role: 'Managing Director',
     company: 'Urban Threads Closet',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
-    content: 'VP Media rebuilt our e-commerce platform with custom payment gateways and lightning-fast speed. We went from struggling with clunky ordering to closing sales effortlessly. Victor delivered exactly within our 5-7 day timeline!',
+    content: 'VP Media rebuilt our e-commerce platform with custom payment gateways and lightning-fast speed. We went from struggling with clunky ordering to closing sales effortlessly. Victor delivered exactly within our agreed timeline!',
     rating: 5,
     serviceUsed: 'E-Commerce Platform',
     resultsBadge: '₦3.2M Online Sales in 30 Days',
@@ -286,7 +286,7 @@ export const TESTIMONIALS: Testimonial[] = [
 export const FAQS: FaqItem[] = [
   {
     question: 'How fast will my website be delivered?',
-    answer: 'We pride ourselves on fast & optimal delivery! Portfolio websites (₦30,000) are typically completed in 3–5 days. Small & Medium Business websites (₦100,000) are ready in 5–7 days. Enterprise builds vary depending on custom complexity.',
+    answer: 'We pride ourselves on fast & optimal delivery! Typical project timeline: 3–5 business days, depending on scope and availability. Enterprise and custom builds vary depending on complexity.',
     category: 'websites',
   },
   {

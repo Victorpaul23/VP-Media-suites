@@ -125,7 +125,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation }) => {
             <div className="pt-4 flex flex-wrap items-center gap-y-2 gap-x-6 text-xs text-slate-600 font-medium">
               <div className="flex items-center gap-1.5 text-slate-800">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>3–5 Days Rapid Delivery</span>
+                <span>Estimated delivery time line: Days not weeks</span>
               </div>
               <div className="flex items-center gap-1.5 text-slate-800">
                 <ShieldCheck className="w-4 h-4 text-blue-600" />

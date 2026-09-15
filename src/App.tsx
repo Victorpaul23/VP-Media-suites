@@ -10,6 +10,8 @@ import { FaqSection } from './components/FaqSection';
 import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { GetQuotePage } from './pages/GetQuotePage';
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
+import { CookieConsentBanner } from './components/CookieConsentBanner';
 import { useCurrentPath, navigateTo } from './utils/navigation';
 
 export default function App() {
@@ -21,8 +23,28 @@ export default function App() {
     lowerPath.startsWith('/get_quote') ||
     lowerPath.startsWith('/quote');
 
+  const isPrivacyPolicy =
+    lowerPath.startsWith('/privacypolicy') ||
+    lowerPath.startsWith('/privacy-policy') ||
+    lowerPath.startsWith('/privacy_policy') ||
+    lowerPath.startsWith('/privacy');
+
+  if (isPrivacyPolicy) {
+    return (
+      <>
+        <PrivacyPolicyPage />
+        <CookieConsentBanner />
+      </>
+    );
+  }
+
   if (isGetQuote) {
-    return <GetQuotePage />;
+    return (
+      <>
+        <GetQuotePage />
+        <CookieConsentBanner />
+      </>
+    );
   }
 
   const handleOpenQuote = (tierId?: string) => {
@@ -67,6 +89,9 @@ export default function App() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Cookie Consent Banner & Settings Modal */}
+      <CookieConsentBanner />
     </div>
   );
 }

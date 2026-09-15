@@ -3,6 +3,7 @@ import confetti from 'canvas-confetti';
 import { motion } from 'motion/react';
 import { AGENCY_INFO } from '../data/agencyData';
 import { navigateTo } from '../utils/navigation';
+import { fireXConversionEvent, openCookieSettings } from '../utils/cookieConsent';
 import {
   ArrowLeft,
   MessageSquare,
@@ -39,7 +40,7 @@ const ALL_TIERS: TierOption[] = [
     name: 'Portfolio Website',
     price: '₦30,000',
     subtitle: 'For creatives, freelancers, professionals & personal brands',
-    turnaround: '3–5 Business Days',
+    turnaround: 'fast delivery timeline',
     gradientBg: 'linear-gradient(145deg, #3b82f6 0%, #2563eb 100%)',
     borderClass: 'border-blue-400/50 hover:border-white',
     selectedBorderClass: 'border-white ring-4 ring-white/35 shadow-2xl shadow-blue-600/50',
@@ -57,7 +58,7 @@ const ALL_TIERS: TierOption[] = [
     name: 'SMB Business Website',
     price: '₦100,000',
     subtitle: 'For Medium scale businesses - If you are a vendor, you sell products and services online, etc',
-    turnaround: '5–7 Days',
+    turnaround: 'fast delivery timeline',
     popular: true,
     gradientBg: 'linear-gradient(145deg, #2563eb 0%, #1d4ed8 100%)',
     borderClass: 'border-blue-400/50 hover:border-amber-300',
@@ -76,7 +77,7 @@ const ALL_TIERS: TierOption[] = [
     name: 'Enterprise Platform',
     price: '₦500,000+',
     subtitle: 'Custom web platforms, E-commerce, SaaS & portals',
-    turnaround: '2–3 Weeks',
+    turnaround: 'fast delivery timeline',
     gradientBg: 'linear-gradient(145deg, #1d4ed8 0%, #1e40af 100%)',
     borderClass: 'border-blue-400/50 hover:border-white',
     selectedBorderClass: 'border-white ring-4 ring-white/35 shadow-2xl shadow-blue-600/50',
@@ -97,7 +98,7 @@ export const GetQuotePage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [selectedTier, setSelectedTier] = useState<string>('smb');
-  const [timeline, setTimeline] = useState('5-10 days');
+  const [timeline, setTimeline] = useState('This week');
   const [projectDetails, setProjectDetails] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [ripples, setRipples] = useState<ClickRipple[]>([]);
@@ -164,14 +165,8 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
     const url = `https://wa.me/${AGENCY_INFO.whatsappNumber}?text=${encodeURIComponent(
       whatsappMessage
     )}`;
-    // Trigger X conversion tracking event safely
-    try {
-      if (typeof window !== 'undefined' && typeof (window as unknown as { twq?: (...args: unknown[]) => void }).twq === 'function') {
-        (window as unknown as { twq: (...args: unknown[]) => void }).twq('event', 'tw-rf672-rf8d1', {});
-      }
-    } catch {
-      // Ignore tracking errors
-    }
+    // Trigger X conversion tracking event strictly with non-essential cookie consent
+    fireXConversionEvent('tw-rf672-rf8d1', {});
     window.open(url, '_blank');
     setIsSubmitted(true);
   };
@@ -419,7 +414,7 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
 
                           <div className="mt-3 flex items-center gap-1.5 text-[10px] font-medium text-blue-100">
                             <Clock className="w-3.5 h-3.5 text-blue-200 shrink-0" />
-                            <span>Estimated time of delivery: {tier.turnaround}</span>
+                            <span>fast delivery timeline</span>
                           </div>
                         </div>
 
@@ -451,7 +446,7 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
                       3
                     </span>
                     <h2 className="text-base font-black text-slate-900">
-                      Time of delivery - How fast do you want your website to be delivered?
+                      When do you want your website?
                     </h2>
                   </div>
                 </div>
@@ -459,9 +454,9 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     {[
-                      '3-5 Days',
-                      '5-10 days',
-                      'A month+',
+                      'This week',
+                      'Next week or 2',
+                      'Next month',
                     ].map((t) => (
                       <button
                         key={t}
@@ -526,7 +521,7 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
               <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-50 via-white to-amber-50 border border-blue-200 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-500">Selected Package</span>
-                  <span className="text-xs font-black text-blue-700 bg-blue-100 px-2.5 py-0.5 rounded-full">
+                  <span className="text-[11px] font-bold text-blue-700 bg-blue-100 px-2.5 py-0.5 rounded-full">
                     {activeTier.turnaround}
                   </span>
                 </div>
@@ -593,6 +588,31 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
           </div>
         </div>
       </main>
+
+      {/* Quote Page Footer */}
+      <footer className="max-w-4xl mx-auto px-4 sm:px-6 pt-12 pb-6 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+        <span>© {new Date().getFullYear()} VP Media Suites.</span>
+        <div className="flex items-center gap-4">
+          <a
+            href="/PrivacyPolicy"
+            onClick={(e) => {
+              e.preventDefault();
+              navigateTo('/PrivacyPolicy');
+            }}
+            className="text-slate-600 hover:text-blue-600 underline transition-colors"
+          >
+            Privacy Policy
+          </a>
+          <span>•</span>
+          <button
+            type="button"
+            onClick={() => openCookieSettings()}
+            className="text-slate-600 hover:text-blue-600 underline transition-colors cursor-pointer"
+          >
+            Cookie Settings
+          </button>
+        </div>
+      </footer>
     </div>
   );
 };

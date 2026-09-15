@@ -1,7 +1,8 @@
 import React from 'react';
 import { AGENCY_INFO } from '../data/agencyData';
 import { navigateTo } from '../utils/navigation';
-import { Sparkles, MessageSquare, Mail, ArrowUp } from 'lucide-react';
+import { Sparkles, MessageSquare, Mail, ArrowUp, Shield, Cookie } from 'lucide-react';
+import { openCookieSettings } from '../utils/cookieConsent';
 
 export const Footer: React.FC = () => {
   const scrollToTop = () => {
@@ -97,8 +98,29 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-          <div className="text-slate-400">
-            © {new Date().getFullYear()} VP Media Suites. All rights reserved. Precision engineering for high-conversion brands.
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 text-slate-400">
+            <span>
+              © {new Date().getFullYear()} VP Media Suites. All rights reserved.
+            </span>
+            <div className="flex items-center gap-4">
+              <a
+                href="/PrivacyPolicy"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateTo('/PrivacyPolicy');
+                }}
+                className="text-slate-400 hover:text-amber-300 underline transition-colors"
+              >
+                Privacy Policy
+              </a>
+              <button
+                type="button"
+                onClick={() => openCookieSettings()}
+                className="text-slate-400 hover:text-amber-300 underline transition-colors cursor-pointer"
+              >
+                Cookie Settings
+              </button>
+            </div>
           </div>
 
           <button
