@@ -8,14 +8,14 @@ export const WhyUs: React.FC = () => {
   const getIcon = (iconName: string) => {
     switch (iconName) {
       case 'Zap':
-        return <Zap className="w-6 h-6 text-amber-500" />;
+        return <Zap className="w-6 h-6 text-amber-300 group-hover:text-blue-600 transition-colors" />;
       case 'Heart':
-        return <Heart className="w-6 h-6 text-rose-500" />;
+        return <Heart className="w-6 h-6 text-rose-300 group-hover:text-rose-600 transition-colors" />;
       case 'RefreshCw':
-        return <RefreshCw className="w-6 h-6 text-blue-600" />;
+        return <RefreshCw className="w-6 h-6 text-blue-200 group-hover:text-blue-600 transition-colors" />;
       case 'Sparkles':
       default:
-        return <Sparkles className="w-6 h-6 text-amber-600" />;
+        return <Sparkles className="w-6 h-6 text-amber-300 group-hover:text-blue-600 transition-colors" />;
     }
   };
 
@@ -136,22 +136,28 @@ export const WhyUs: React.FC = () => {
                 scale: 1.05,
                 y: -10,
                 rotate: idx % 2 === 0 ? 1.5 : -1.5,
-                boxShadow: '0 20px 30px -10px rgba(37, 99, 235, 0.15)',
+                boxShadow: '0 25px 35px -10px rgba(37, 99, 235, 0.45)',
               }}
               whileTap={{ scale: 0.98 }}
-              className="group relative bg-white p-7 rounded-3xl border-2 border-slate-200 hover:border-blue-500 transition-colors duration-300 flex flex-col justify-between shadow-xs cursor-pointer overflow-hidden"
+              className="group relative bg-gradient-to-br from-[#2563eb] via-[#1d4ed8] to-[#1e40af] p-7 rounded-3xl border-2 border-blue-400/50 hover:border-white transition-all duration-300 flex flex-col justify-between shadow-xl shadow-blue-600/25 hover:shadow-2xl hover:shadow-blue-600/40 cursor-pointer overflow-hidden text-white"
             >
+              {/* Prominent Shine Sweep: Gloss beam sweeps across card upon hover */}
+              <div
+                className="pointer-events-none absolute inset-0 -top-1/2 -bottom-1/2 w-3/4 bg-gradient-to-r from-transparent via-white/45 to-transparent -translate-x-full animate-shine-sweep-prominent z-20"
+                aria-hidden="true"
+              />
+
               {/* Canva-Style Floating Corner Badge */}
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.3 + idx * 0.1, type: 'spring' }}
-                className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 text-[10px] font-black tracking-wider uppercase border border-amber-300"
+                className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-amber-300 text-slate-950 text-[10px] font-black tracking-wider uppercase border border-amber-200 shadow-xs z-10"
               >
                 Pillar 0{idx + 1}
               </motion.div>
 
-              <div className="space-y-4 pt-2">
+              <div className="relative z-10 space-y-4 pt-2">
                 {/* Icon Circle with Bouncy Motion */}
                 <motion.div
                   whileHover={{
@@ -159,28 +165,28 @@ export const WhyUs: React.FC = () => {
                     rotate: [0, -12, 12, -6, 0],
                     transition: { duration: 0.4 },
                   }}
-                  className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 flex items-center justify-center group-hover:border-blue-400 group-hover:bg-blue-600/10 transition-all duration-300 shadow-sm"
+                  className="w-14 h-14 rounded-2xl bg-white/15 border border-white/25 flex items-center justify-center group-hover:bg-white transition-all duration-300 shadow-md"
                 >
                   {getIcon(item.icon)}
                 </motion.div>
 
-                <h3 className="text-lg font-black text-slate-900 group-hover:text-blue-600 transition-colors">
+                <h3 className="text-lg font-black text-white group-hover:text-white transition-colors tracking-tight">
                   {item.title}
                 </h3>
 
-                <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-medium">
+                <p className="text-blue-100 text-xs sm:text-sm leading-relaxed font-normal">
                   {item.description}
                 </p>
               </div>
 
               {/* Bottom Interactive Tag */}
-              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-black text-blue-600">
-                <span className="font-mono text-slate-400 text-[11px]">GUARANTEED</span>
+              <div className="relative z-10 mt-6 pt-4 border-t border-white/20 flex items-center justify-between text-xs font-black text-white">
+                <span className="font-mono text-blue-200 text-[11px] tracking-wider">GUARANTEED</span>
                 <motion.div
                   whileHover={{ scale: 1.3, rotate: 360 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <CheckCircle className="w-5 h-5 text-emerald-500 fill-emerald-100" />
+                  <CheckCircle className="w-5 h-5 text-emerald-300 fill-emerald-950/40" />
                 </motion.div>
               </div>
             </motion.div>

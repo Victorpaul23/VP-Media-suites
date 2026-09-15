@@ -1,21 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { motion } from 'motion/react';
-import { AGENCY_INFO, WEBSITE_TIERS } from '../data/agencyData';
+import { AGENCY_INFO } from '../data/agencyData';
 import { navigateTo } from '../utils/navigation';
 import {
   ArrowLeft,
   MessageSquare,
   CheckCircle2,
   Sparkles,
-  ShieldCheck,
-  Zap,
-  Globe,
   Clock,
-  Send,
   HelpCircle,
-  Award,
-  Layers,
 } from 'lucide-react';
 
 interface TierOption {
@@ -26,6 +20,17 @@ interface TierOption {
   turnaround: string;
   popular?: boolean;
   features: string[];
+  gradientBg: string;
+  borderClass: string;
+  selectedBorderClass: string;
+  glowColor: string;
+}
+
+interface ClickRipple {
+  id: number;
+  x: number;
+  y: number;
+  tierId: string;
 }
 
 const ALL_TIERS: TierOption[] = [
@@ -35,6 +40,10 @@ const ALL_TIERS: TierOption[] = [
     price: '₦30,000',
     subtitle: 'For creatives, freelancers, professionals & personal brands',
     turnaround: '3–5 Business Days',
+    gradientBg: 'linear-gradient(145deg, #3b82f6 0%, #2563eb 100%)',
+    borderClass: 'border-blue-400/50 hover:border-white',
+    selectedBorderClass: 'border-white ring-4 ring-white/35 shadow-2xl shadow-blue-600/50',
+    glowColor: 'rgba(255, 255, 255, 0.45)',
     features: [
       'High-converting single/multi-page portfolio',
       'Bio, service offer & work showcase catalog',
@@ -47,9 +56,13 @@ const ALL_TIERS: TierOption[] = [
     id: 'smb',
     name: 'SMB Business Website',
     price: '₦100,000',
-    subtitle: 'Full conversion-engineered website for growing businesses',
+    subtitle: 'For Medium scale businesses - If you are a vendor, you sell products and services online, etc',
     turnaround: '5–7 Days',
     popular: true,
+    gradientBg: 'linear-gradient(145deg, #2563eb 0%, #1d4ed8 100%)',
+    borderClass: 'border-blue-400/50 hover:border-amber-300',
+    selectedBorderClass: 'border-amber-300 ring-4 ring-amber-300/35 shadow-2xl shadow-blue-600/60',
+    glowColor: 'rgba(255, 255, 255, 0.45)',
     features: [
       'Interactive product/service showcase',
       'Lead generation forms with email & WhatsApp alerts',
@@ -64,25 +77,16 @@ const ALL_TIERS: TierOption[] = [
     price: '₦500,000+',
     subtitle: 'Custom web platforms, E-commerce, SaaS & portals',
     turnaround: '2–3 Weeks',
+    gradientBg: 'linear-gradient(145deg, #1d4ed8 0%, #1e40af 100%)',
+    borderClass: 'border-blue-400/50 hover:border-white',
+    selectedBorderClass: 'border-white ring-4 ring-white/35 shadow-2xl shadow-blue-600/50',
+    glowColor: 'rgba(255, 255, 255, 0.45)',
     features: [
       'Custom database, dashboards & authentication',
       'Payment gateways (Paystack / Flutterwave / Stripe)',
       'Advanced API integrations & automated workflows',
       'Full brand system & custom interactive UI',
       'Dedicated priority support & security audits',
-    ],
-  },
-  {
-    id: 'custom_app',
-    name: 'Custom Web Application / SaaS',
-    price: 'Custom Scope',
-    subtitle: 'Bespoke software, booking systems & specialized platforms',
-    turnaround: 'Milestone Based',
-    features: [
-      'Full-stack React / Node.js architecture',
-      'Custom workflows tailored to your business operations',
-      'Complete cloud deployment & domain configuration',
-      'Ongoing architectural support & maintenance',
     ],
   },
 ];
@@ -93,9 +97,32 @@ export const GetQuotePage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [selectedTier, setSelectedTier] = useState<string>('smb');
-  const [timeline, setTimeline] = useState('Standard (1–2 Weeks)');
+  const [timeline, setTimeline] = useState('5-10 days');
   const [projectDetails, setProjectDetails] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [ripples, setRipples] = useState<ClickRipple[]>([]);
+
+  // Trigger ripple from pointer coordinate when clicking card
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>, tierId: string) => {
+    setSelectedTier(tierId);
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const newRipple: ClickRipple = {
+      id: Date.now() + Math.random(),
+      x,
+      y,
+      tierId,
+    };
+
+    setRipples((prev) => [...prev.slice(-4), newRipple]);
+
+    // Clean up ripple after animation
+    setTimeout(() => {
+      setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
+    }, 700);
+  };
 
   // Read URL query param on mount if provided (e.g. /GetQuote?tier=portfolio)
   useEffect(() => {
@@ -186,7 +213,7 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
             className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-xs font-bold transition-all"
           >
             <MessageSquare className="w-3.5 h-3.5" />
-            <span>Direct WhatsApp Help</span>
+            <span>Support</span>
           </a>
         </div>
       </header>
@@ -316,74 +343,98 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
                 </div>
               </div>
 
-              {/* Step 2: Website Tier Selection */}
+              {/* Step 2: Website Package Selection */}
               <div className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                   <div className="flex items-center gap-2">
                     <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center">
                       2
                     </span>
-                    <h2 className="text-base font-black text-slate-900">Choose Website Tier</h2>
+                    <h2 className="text-base font-black text-slate-900">Select your website package</h2>
                   </div>
                   <span className="text-[11px] text-amber-800 font-bold bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
                     Transparent Pricing
                   </span>
                 </div>
 
-                {/* Tier Selection Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {/* Package Selection Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 items-stretch">
                   {ALL_TIERS.map((tier) => {
                     const isSelected = selectedTier === tier.id;
+                    const tierRipples = ripples.filter((r) => r.tierId === tier.id);
                     return (
                       <div
                         key={tier.id}
-                        onClick={() => setSelectedTier(tier.id)}
-                        className={`relative p-4 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between ${
+                        onClick={(e) => handleCardClick(e, tier.id)}
+                        style={{ background: tier.gradientBg }}
+                        className={`group relative p-4.5 rounded-2xl cursor-pointer flex flex-col justify-between overflow-hidden text-white transition-all duration-300 transform-gpu ${
                           isSelected
-                            ? 'border-blue-600 bg-blue-50/50 shadow-sm'
-                            : 'border-slate-200 bg-slate-50/50 hover:border-slate-300 hover:bg-white'
+                            ? `border-2 ${tier.selectedBorderClass} scale-[1.03] z-20`
+                            : `border ${tier.borderClass} shadow-md shadow-slate-900/10 hover:scale-[1.015] hover:shadow-lg opacity-90 hover:opacity-100 z-10`
                         }`}
                       >
+                        {/* Tactile Click Ripple Expanding Outward */}
+                        {tierRipples.map((ripple) => (
+                          <span
+                            key={ripple.id}
+                            className="tactile-ripple-wave pointer-events-none absolute rounded-full"
+                            style={{
+                              left: `${ripple.x}px`,
+                              top: `${ripple.y}px`,
+                              width: '180px',
+                              height: '180px',
+                              backgroundColor: tier.glowColor,
+                              boxShadow: `0 0 25px ${tier.glowColor}`,
+                            }}
+                          />
+                        ))}
+
+                        {/* Shine Sweep: Gloss sweep glides diagonally across the card upon hover */}
+                        <div
+                          className="pointer-events-none absolute inset-0 -top-1/2 -bottom-1/2 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shine-sweep z-20"
+                          aria-hidden="true"
+                        />
+
                         {tier.popular && (
-                          <span className="absolute -top-2.5 right-3 px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] tracking-wide uppercase shadow-2xs">
+                          <span className="absolute -top-2.5 right-3 px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] tracking-wide uppercase shadow-md z-30">
                             Most Popular
                           </span>
                         )}
 
-                        <div>
-                          <div className="flex items-center justify-between gap-2">
-                            <h3 className="text-sm font-black text-slate-900">{tier.name}</h3>
+                        <div className="relative z-10">
+                          <div className="flex items-baseline justify-between gap-1">
+                            <h3 className="text-sm font-black text-white tracking-tight">{tier.name}</h3>
                             <span
-                              className={`text-sm font-black ${
-                                isSelected ? 'text-blue-600' : 'text-slate-800'
+                              className={`text-sm font-black shrink-0 ${
+                                isSelected ? 'text-white' : 'text-blue-100'
                               }`}
                             >
                               {tier.price}
                             </span>
                           </div>
 
-                          <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                          <p className="text-[11px] text-blue-100 mt-1.5 leading-relaxed font-normal">
                             {tier.subtitle}
                           </p>
 
-                          <div className="mt-3 flex items-center gap-1.5 text-[10px] font-bold text-slate-600">
-                            <Clock className="w-3 h-3 text-blue-600" />
-                            <span>Turnaround: {tier.turnaround}</span>
+                          <div className="mt-3 flex items-center gap-1.5 text-[10px] font-medium text-blue-100">
+                            <Clock className="w-3.5 h-3.5 text-blue-200 shrink-0" />
+                            <span>Estimated time of delivery: {tier.turnaround}</span>
                           </div>
                         </div>
 
-                        <div className="mt-4 pt-3 border-t border-slate-200/70 flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-slate-500">
-                            {isSelected ? '✓ Selected Tier' : 'Tap to select'}
+                        <div className="relative z-10 mt-4 pt-3 border-t border-white/20 flex items-center justify-between">
+                          <span className={`text-[10px] font-bold ${isSelected ? 'text-white' : 'text-blue-200'}`}>
+                            {isSelected ? '✓ Selected' : 'Tap to select'}
                           </span>
                           <div
-                            className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                            className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${
                               isSelected
-                                ? 'border-blue-600 bg-blue-600 text-white'
-                                : 'border-slate-300 bg-white'
+                                ? 'border-white bg-white text-blue-600 shadow-xs'
+                                : 'border-white/40 bg-blue-900/30 group-hover:border-white/80'
                             }`}
                           >
-                            {isSelected && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
+                            {isSelected && <div className="w-2 h-2 bg-blue-600 rounded-full" />}
                           </div>
                         </div>
                       </div>
@@ -399,33 +450,32 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
                     <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center">
                       3
                     </span>
-                    <h2 className="text-base font-black text-slate-900">Project Timeline & Vision</h2>
+                    <h2 className="text-base font-black text-slate-900">
+                      Time of delivery - How fast do you want your website to be delivered?
+                    </h2>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-700">Preferred Timeline</label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      {[
-                        'Fast-Track (3–5 Days)',
-                        'Standard (1–2 Weeks)',
-                        'Flexible / Next Month',
-                      ].map((t) => (
-                        <button
-                          key={t}
-                          type="button"
-                          onClick={() => setTimeline(t)}
-                          className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all ${
-                            timeline === t
-                              ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
-                              : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-                          }`}
-                        >
-                          {t}
-                        </button>
-                      ))}
-                    </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    {[
+                      '3-5 Days',
+                      '5-10 days',
+                      'A month+',
+                    ].map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setTimeline(t)}
+                        className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                          timeline === t
+                            ? 'bg-blue-600 text-white border-blue-600 shadow-2xs'
+                            : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
                   </div>
 
                   <div className="space-y-1.5">
@@ -447,10 +497,10 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
               <div className="block lg:hidden">
                 <button
                   type="submit"
-                  className="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-xl shadow-blue-600/30 flex items-center justify-center gap-2.5 transition-all"
+                  className="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-xl shadow-blue-600/30 flex items-center justify-center gap-2.5 transition-all cursor-pointer"
                 >
                   <MessageSquare className="w-5 h-5 fill-white" />
-                  <span>Send us a message on WhatsApp</span>
+                  <span>Submit My Website order</span>
                 </button>
               </div>
             </form>
@@ -475,7 +525,7 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
               {/* Selected Tier Highlights */}
               <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-50 via-white to-amber-50 border border-blue-200 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-500">Selected Tier</span>
+                  <span className="text-xs font-bold text-slate-500">Selected Package</span>
                   <span className="text-xs font-black text-blue-700 bg-blue-100 px-2.5 py-0.5 rounded-full">
                     {activeTier.turnaround}
                   </span>
@@ -506,19 +556,6 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
                 </div>
               </div>
 
-              {/* Guarantees Box */}
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs text-slate-600">
-                <div className="flex items-center gap-2 text-slate-900 font-bold">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  <span>VP Media Service Guarantees:</span>
-                </div>
-                <p className="text-[11px] leading-relaxed">
-                  ✓ Direct architectural review by Victor Paul<br />
-                  ✓ 100% SLA Guarantee & mobile-first QA testing<br />
-                  ✓ Post-launch support & handover instructions
-                </p>
-              </div>
-
               {/* Primary Action Button */}
               <button
                 type="button"
@@ -526,7 +563,7 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
                 className="w-full py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-xl shadow-blue-600/30 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02] active:scale-[0.99] cursor-pointer"
               >
                 <MessageSquare className="w-5 h-5 fill-white text-white" />
-                <span>Send us a message on WhatsApp</span>
+                <span>Submit My Website order</span>
               </button>
 
               <div className="text-center space-y-1">

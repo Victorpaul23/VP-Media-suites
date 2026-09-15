@@ -54,21 +54,29 @@ export const ProcessTimeline: React.FC = () => {
             return (
               <div
                 key={idx}
-                className="relative bg-slate-50 p-7 rounded-3xl border border-slate-200 hover:border-blue-400 transition-all duration-300 space-y-4 group shadow-xs hover:shadow-md"
+                className="group relative bg-gradient-to-br from-[#2563eb] via-[#1d4ed8] to-[#1e40af] p-7 rounded-3xl border-2 border-blue-400/50 hover:border-white transition-all duration-300 space-y-4 shadow-xl shadow-blue-600/25 hover:shadow-2xl hover:shadow-blue-600/40 hover:-translate-y-1.5 overflow-hidden text-white cursor-pointer"
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-3xl font-mono font-black text-blue-200 group-hover:text-blue-600 transition-colors">
+                {/* Prominent Shine Sweep Effect */}
+                <div
+                  className="pointer-events-none absolute inset-0 -top-1/2 -bottom-1/2 w-3/4 bg-gradient-to-r from-transparent via-white/45 to-transparent -translate-x-full animate-shine-sweep-prominent z-20"
+                  aria-hidden="true"
+                />
+
+                <div className="relative z-10 flex items-center justify-between">
+                  <span className="text-3xl font-mono font-black text-blue-200 group-hover:text-white transition-colors">
                     {step.num}
                   </span>
-                  <div className="p-3.5 rounded-2xl bg-white text-amber-800 border border-slate-200 group-hover:border-blue-300 transition-all shadow-xs">
-                    <Icon className="w-5 h-5 text-amber-700" />
+                  <div className="p-3.5 rounded-2xl bg-white/15 text-white border border-white/25 group-hover:bg-white group-hover:border-white transition-all shadow-md">
+                    <Icon className="w-5 h-5 text-amber-300 group-hover:text-blue-600 transition-colors" />
                   </div>
                 </div>
 
-                <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                  {step.title}
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">{step.desc}</p>
+                <div className="relative z-10 space-y-2">
+                  <h3 className="text-lg font-black text-white group-hover:text-white transition-colors tracking-tight">
+                    {step.title}
+                  </h3>
+                  <p className="text-xs text-blue-100 leading-relaxed font-normal">{step.desc}</p>
+                </div>
               </div>
             );
           })}

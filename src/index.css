@@ -267,3 +267,60 @@
   scrollbar-width: none;
 }
 
+/* Shine Sweep effect */
+@keyframes shine-sweep {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateX(250%) skewX(-25deg);
+    opacity: 0;
+  }
+}
+
+.group:hover .animate-shine-sweep {
+  animation: shine-sweep 0.85s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Prominent Shine Sweep effect */
+@keyframes shine-sweep-prominent {
+  0% {
+    transform: translateX(-180%) skewX(-25deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(280%) skewX(-25deg);
+    opacity: 0;
+  }
+}
+
+.group:hover .animate-shine-sweep-prominent {
+  animation: shine-sweep-prominent 0.95s cubic-bezier(0.2, 0.6, 0.35, 1) forwards;
+}
+
+/* Tactile Click Ripple */
+@keyframes tactile-ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(3.5);
+    opacity: 0;
+  }
+}
+
+.tactile-ripple-wave {
+  animation: tactile-ripple 0.65s cubic-bezier(0.1, 0.4, 0.2, 1) forwards;
+}
+
