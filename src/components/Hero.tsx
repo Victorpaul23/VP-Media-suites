@@ -9,7 +9,6 @@ import {
   ArrowRight,
   ShieldCheck,
   CheckCircle2,
-  Zap,
   Cpu,
   FileText,
 } from 'lucide-react';
@@ -130,10 +129,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenConsultation }) => {
               <div className="flex items-center gap-1.5 text-slate-800">
                 <ShieldCheck className="w-4 h-4 text-blue-600" />
                 <span>Security & Continuous Support</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-slate-800">
-                <Zap className="w-4 h-4 text-amber-600" />
-                <span>100% Satisfaction Guarantee</span>
               </div>
             </div>
           </div>

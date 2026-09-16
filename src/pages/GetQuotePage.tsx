@@ -40,7 +40,7 @@ const ALL_TIERS: TierOption[] = [
     name: 'Portfolio Website',
     price: '₦30,000',
     subtitle: 'For creatives, freelancers, professionals & personal brands',
-    turnaround: 'fast delivery timeline',
+    turnaround: 'we deliver on schedule',
     gradientBg: 'linear-gradient(145deg, #3b82f6 0%, #2563eb 100%)',
     borderClass: 'border-blue-400/50 hover:border-white',
     selectedBorderClass: 'border-white ring-4 ring-white/35 shadow-2xl shadow-blue-600/50',
@@ -58,7 +58,7 @@ const ALL_TIERS: TierOption[] = [
     name: 'SMB Business Website',
     price: '₦100,000',
     subtitle: 'For Medium scale businesses - If you are a vendor, you sell products and services online, etc',
-    turnaround: 'fast delivery timeline',
+    turnaround: 'we deliver on schedule',
     popular: true,
     gradientBg: 'linear-gradient(145deg, #2563eb 0%, #1d4ed8 100%)',
     borderClass: 'border-blue-400/50 hover:border-amber-300',
@@ -77,7 +77,7 @@ const ALL_TIERS: TierOption[] = [
     name: 'Enterprise Platform',
     price: '₦500,000+',
     subtitle: 'Custom web platforms, E-commerce, SaaS & portals',
-    turnaround: 'fast delivery timeline',
+    turnaround: 'we deliver on schedule',
     gradientBg: 'linear-gradient(145deg, #1d4ed8 0%, #1e40af 100%)',
     borderClass: 'border-blue-400/50 hover:border-white',
     selectedBorderClass: 'border-white ring-4 ring-white/35 shadow-2xl shadow-blue-600/50',
@@ -227,7 +227,7 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
           </h1>
 
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-            Select your preferred website package tier, outline your brand vision, and immediately launch your direct discussion with Victor Paul on WhatsApp with everything pre-configured.
+            Select your preferred website package tier, outline your brand vision, and immediately launch your direct discussion with our Website architect on WhatsApp with everything pre-configured.
           </p>
         </div>
 
@@ -245,7 +245,7 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
               <div>
                 <h3 className="text-base font-black">Quote Dispatched to WhatsApp!</h3>
                 <p className="text-xs text-emerald-800 leading-relaxed">
-                  Your customized scope has been generated. If WhatsApp didn't open automatically, click the button to continue your chat with Victor Paul.
+                  Your customized scope has been generated. If WhatsApp didn't open automatically, click the button to continue your chat with our Website architect.
                 </p>
               </div>
             </div>
@@ -294,7 +294,7 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="e.g. Victor Paul"
+                      placeholder="Enter your full name"
                       className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 focus:bg-white transition-all"
                     />
                   </div>
@@ -348,12 +348,12 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
                     <h2 className="text-base font-black text-slate-900">Select your website package</h2>
                   </div>
                   <span className="text-[11px] text-amber-800 font-bold bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
-                    Transparent Pricing
+                    Packages that suits you
                   </span>
                 </div>
 
                 {/* Package Selection Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 items-stretch">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 items-stretch pt-3">
                   {ALL_TIERS.map((tier) => {
                     const isSelected = selectedTier === tier.id;
                     const tierRipples = ripples.filter((r) => r.tierId === tier.id);
@@ -362,38 +362,45 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
                         key={tier.id}
                         onClick={(e) => handleCardClick(e, tier.id)}
                         style={{ background: tier.gradientBg }}
-                        className={`group relative p-4.5 rounded-2xl cursor-pointer flex flex-col justify-between overflow-hidden text-white transition-all duration-300 transform-gpu ${
+                        className={`group relative p-4.5 rounded-2xl cursor-pointer flex flex-col justify-between text-white transition-all duration-300 transform-gpu ${
                           isSelected
                             ? `border-2 ${tier.selectedBorderClass} scale-[1.03] z-20`
                             : `border ${tier.borderClass} shadow-md shadow-slate-900/10 hover:scale-[1.015] hover:shadow-lg opacity-90 hover:opacity-100 z-10`
                         }`}
                       >
-                        {/* Tactile Click Ripple Expanding Outward */}
-                        {tierRipples.map((ripple) => (
-                          <span
-                            key={ripple.id}
-                            className="tactile-ripple-wave pointer-events-none absolute rounded-full"
-                            style={{
-                              left: `${ripple.x}px`,
-                              top: `${ripple.y}px`,
-                              width: '180px',
-                              height: '180px',
-                              backgroundColor: tier.glowColor,
-                              boxShadow: `0 0 25px ${tier.glowColor}`,
-                            }}
+                        {/* Overflow-hidden inner layer for tactile ripples & shine sweep */}
+                        <div className="pointer-events-none absolute inset-0 rounded-2xl overflow-hidden" aria-hidden="true">
+                          {/* Tactile Click Ripple Expanding Outward */}
+                          {tierRipples.map((ripple) => (
+                            <span
+                              key={ripple.id}
+                              className="tactile-ripple-wave pointer-events-none absolute rounded-full"
+                              style={{
+                                left: `${ripple.x}px`,
+                                top: `${ripple.y}px`,
+                                width: '180px',
+                                height: '180px',
+                                backgroundColor: tier.glowColor,
+                                boxShadow: `0 0 25px ${tier.glowColor}`,
+                              }}
+                            />
+                          ))}
+
+                          {/* Shine Sweep: Gloss sweep glides diagonally across the card upon hover */}
+                          <div
+                            className="pointer-events-none absolute inset-0 -top-1/2 -bottom-1/2 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shine-sweep z-20"
+                            aria-hidden="true"
                           />
-                        ))}
+                        </div>
 
-                        {/* Shine Sweep: Gloss sweep glides diagonally across the card upon hover */}
-                        <div
-                          className="pointer-events-none absolute inset-0 -top-1/2 -bottom-1/2 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-shine-sweep z-20"
-                          aria-hidden="true"
-                        />
-
+                        {/* Golden Package Badge - fully visible without being clipped */}
                         {tier.popular && (
-                          <span className="absolute -top-2.5 right-3 px-2 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] tracking-wide uppercase shadow-md z-30">
-                            Most Popular
-                          </span>
+                          <div className="absolute -top-3.5 right-3 sm:right-4 z-30">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] sm:text-[11px] tracking-wide uppercase shadow-lg ring-2 ring-white">
+                              <Sparkles className="w-3.5 h-3.5 text-slate-950 fill-slate-950 shrink-0" />
+                              <span>Golden package</span>
+                            </span>
+                          </div>
                         )}
 
                         <div className="relative z-10">
@@ -414,7 +421,7 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
 
                           <div className="mt-3 flex items-center gap-1.5 text-[10px] font-medium text-blue-100">
                             <Clock className="w-3.5 h-3.5 text-blue-200 shrink-0" />
-                            <span>fast delivery timeline</span>
+                            <span>{tier.turnaround}</span>
                           </div>
                         </div>
 
@@ -475,7 +482,7 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
 
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-slate-700">
-                      Tell Victor About Your Brand Vision or Any Reference Links
+                      Tell our Website architect about your brand vision or any reference links
                     </label>
                     <textarea
                       rows={4}
@@ -508,7 +515,7 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
               <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                 <div>
                   <span className="text-[10px] font-mono font-black uppercase tracking-wider text-amber-800">
-                    LIVE QUOTE SUMMARY
+                    Selected Package
                   </span>
                   <h3 className="text-lg font-black text-slate-900">Your Project Blueprint</h3>
                 </div>
@@ -563,7 +570,7 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
 
               <div className="text-center space-y-1">
                 <p className="text-[11px] text-slate-500 font-medium">
-                  Instant dispatch to WhatsApp with your pre-configured specs
+                  We’ll send your details to WhatsApp
                 </p>
                 <p className="text-[10px] text-slate-400">
                   Zero spam • Fast quote turnaround • Friendly consultation

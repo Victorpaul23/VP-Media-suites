@@ -13,7 +13,7 @@ export const AGENCY_INFO = {
     { label: 'Client Satisfaction', value: '100%' },
     { label: 'On-Time Project Delivery', value: '100%' },
     { label: 'High Performing Websites', value: 'Numerous' },
-    { label: 'Delivery Timeline', value: 'fast delivery timeline' },
+    { label: 'Delivery Timeline', value: 'we deliver on schedule' },
   ]
 };
 
@@ -26,7 +26,7 @@ export const WEBSITE_TIERS: WebsiteTier[] = [
     numericPrice: 30000,
     targetAudience: 'Creatives, Freelancers & Professionals',
     hosting: 'Hosted fast on Vercel',
-    turnaround: 'fast delivery timeline',
+    turnaround: 'we deliver on schedule',
     features: [
       'High-converting Single / Multi-section Portfolio Display',
       'Name, Bio, Service Offer & Showcase Catalogue',
@@ -49,7 +49,7 @@ export const WEBSITE_TIERS: WebsiteTier[] = [
     popular: true,
     targetAudience: 'Growing SMBs, Agencies & Product Brands',
     hosting: 'Custom Domain Web Hosting (yourbusiness.com)',
-    turnaround: 'fast delivery timeline',
+    turnaround: 'we deliver on schedule',
     features: [
       'Interactive Product / Service Display & Catalogues',
       'Client Reviews & Trust Testimonial Section',
@@ -73,7 +73,7 @@ export const WEBSITE_TIERS: WebsiteTier[] = [
     numericPrice: 500000,
     targetAudience: 'E-commerce, Tech Startups, SaaS, Logistics & Large Chains',
     hosting: 'Scalable Cloud Infrastructure (AWS / Vercel Enterprise)',
-    turnaround: 'fast delivery timeline',
+    turnaround: 'we deliver on schedule',
     features: [
       'Custom Multi-vendor / E-Commerce Payment Gateways',
       'Custom User Authentication, Dashboards & Databases',

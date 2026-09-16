@@ -140,7 +140,7 @@ Message: ${formData.message}`;
                           required
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          placeholder="e.g. Victor Paul"
+                          placeholder="Enter your full name"
                           className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500"
                         />
                       </div>

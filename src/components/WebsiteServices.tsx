@@ -106,7 +106,7 @@ export const WebsiteServices: React.FC<WebsiteServicesProps> = ({ onOpenConsulta
                       {/* Top Badge */}
                       <div className="flex items-center justify-between">
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-slate-950 text-xs font-black tracking-wide uppercase shadow-xs">
-                          <Sparkles className="w-3 h-3 text-slate-950" /> Most Popular Choice
+                          <Sparkles className="w-3 h-3 text-slate-950" /> Golden Package
                         </span>
                         <span className="text-[10px] text-amber-900 font-mono font-bold">SMB SPECIALIST</span>
                       </div>
@@ -125,7 +125,7 @@ export const WebsiteServices: React.FC<WebsiteServicesProps> = ({ onOpenConsulta
                         <div className="pt-1">
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100/90 border border-blue-200 text-blue-900 text-xs font-bold shadow-2xs">
                             <Clock className="w-3.5 h-3.5 text-blue-700" />
-                            <span>fast delivery timeline</span>
+                            <span>{tier.turnaround || 'we deliver on schedule'}</span>
                           </span>
                         </div>
                       </div>
