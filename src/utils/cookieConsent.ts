@@ -116,7 +116,10 @@ export function loadXPixelScript(): void {
     }
 
     if (typeof win.twq === 'function') {
+      // Primary / existing X Ads account pixel
       win.twq('config', 'rf672');
+      // Secondary X Ads account pixel
+      win.twq('config', 'rg2tf');
     }
     isScriptLoaded = true;
   } catch (err) {
