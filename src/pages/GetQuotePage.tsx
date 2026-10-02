@@ -3,7 +3,7 @@ import confetti from 'canvas-confetti';
 import { motion } from 'motion/react';
 import { AGENCY_INFO } from '../data/agencyData';
 import { navigateTo } from '../utils/navigation';
-import { fireXConversionEvent, openCookieSettings } from '../utils/cookieConsent';
+import { fireXConversionEvent, fireTikTokEvent, openCookieSettings } from '../utils/cookieConsent';
 import {
   ArrowLeft,
   MessageSquare,
@@ -175,9 +175,10 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
     const url = `https://wa.me/${AGENCY_INFO.whatsappNumber}?text=${encodeURIComponent(
       whatsappMessage
     )}`;
-    // Trigger X conversion tracking events strictly with non-essential cookie consent
+    // Trigger advertising conversion tracking events strictly with non-essential cookie consent
     fireXConversionEvent('tw-rf672-rf8d1', {});
     fireXConversionEvent('tw-rg2tf-rg9ir', {});
+    fireTikTokEvent('Lead');
     window.open(url, '_blank');
     setIsSubmitted(true);
   };

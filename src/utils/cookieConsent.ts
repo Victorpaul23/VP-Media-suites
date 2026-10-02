@@ -262,6 +262,30 @@ export function fireXConversionEvent(eventId: string, params: Record<string, unk
 }
 
 /**
+ * Fire a TikTok conversion event safely ONLY IF non-essential advertising cookies are consented to.
+ */
+export function fireTikTokEvent(eventName: string, params?: Record<string, unknown>): void {
+  if (typeof window === 'undefined') return;
+
+  // Strict check: if the visitor has not consented or explicitly rejected advertising cookies, do NOT fire!
+  if (!isAdvertisingConsentGranted()) {
+    return;
+  }
+
+  try {
+    if (window.ttq && typeof window.ttq.track === 'function') {
+      if (params && Object.keys(params).length > 0) {
+        window.ttq.track(eventName, params);
+      } else {
+        window.ttq.track(eventName);
+      }
+    }
+  } catch (err) {
+    console.warn('TikTok conversion event skipped or failed', err);
+  }
+}
+
+/**
  * Open the cookie settings modal from anywhere in the app (e.g. from footer link)
  */
 export function openCookieSettings(): void {
