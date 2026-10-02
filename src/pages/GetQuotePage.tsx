@@ -141,6 +141,16 @@ export const GetQuotePage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validate required fields before proceeding to WhatsApp
+    if (!name.trim()) {
+      const nameInput = document.querySelector<HTMLInputElement>('input[required]');
+      if (nameInput) {
+        nameInput.focus();
+        nameInput.reportValidity?.();
+      }
+      return;
+    }
+
     confetti({
       particleCount: 90,
       spread: 70,
@@ -165,8 +175,9 @@ Hi Victor! I generated this custom quote on the website. I would love to discuss
     const url = `https://wa.me/${AGENCY_INFO.whatsappNumber}?text=${encodeURIComponent(
       whatsappMessage
     )}`;
-    // Trigger X conversion tracking event strictly with non-essential cookie consent
+    // Trigger X conversion tracking events strictly with non-essential cookie consent
     fireXConversionEvent('tw-rf672-rf8d1', {});
+    fireXConversionEvent('tw-rg2tf-rg9ir', {});
     window.open(url, '_blank');
     setIsSubmitted(true);
   };
