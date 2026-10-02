@@ -5,7 +5,7 @@ import {
   hasAnsweredConsent,
   OPEN_SETTINGS_EVENT,
   CONSENT_UPDATED_EVENT,
-  initXPixelIfConsented,
+  initAdvertisingPixelsIfConsented,
 } from '../utils/cookieConsent';
 import { navigateTo } from '../utils/navigation';
 import { Shield, Cookie, Check, X, Settings2, ExternalLink } from 'lucide-react';
@@ -16,8 +16,8 @@ export const CookieConsentBanner: React.FC = () => {
   const [advertisingAllowed, setAdvertisingAllowed] = useState(false);
 
   useEffect(() => {
-    // Initialize X pixel if already consented in a previous session
-    initXPixelIfConsented();
+    // Initialize advertising pixels (X & TikTok) if already consented in a previous session
+    initAdvertisingPixelsIfConsented();
 
     // Check if new visitor
     if (!hasAnsweredConsent()) {
@@ -101,7 +101,7 @@ export const CookieConsentBanner: React.FC = () => {
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
                   We use necessary cookies to ensure the proper functionality of our website. With your consent, we also use advertising and analytics technologies, including the{' '}
-                  <strong className="text-white font-semibold">X (Twitter) Pixel</strong>, to measure conversions, assess marketing campaign effectiveness, and understand visitor interactions. Learn more in our{' '}
+                  <strong className="text-white font-semibold">X (Twitter) & TikTok Pixels</strong>, to measure conversions, assess marketing campaign effectiveness, and understand visitor interactions. Learn more in our{' '}
                   <a
                     href="/PrivacyPolicy"
                     onClick={handleOpenPrivacy}

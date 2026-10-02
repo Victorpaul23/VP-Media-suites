@@ -12,10 +12,16 @@ export const CONSENT_UPDATED_EVENT = 'vp_cookie_consent_updated';
 export const OPEN_SETTINGS_EVENT = 'vp_open_cookie_settings';
 
 let isScriptLoaded = false;
+let isTikTokScriptLoaded = false;
+
+export const TIKTOK_PIXEL_ID = 'DAVOHVBC77U88MSOGEB0';
 
 declare global {
   interface Window {
     twq?: (...args: unknown[]) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ttq?: any;
+    TiktokAnalyticsObject?: string;
     openCookieSettings?: () => void;
   }
 }
@@ -73,6 +79,7 @@ export function setCookieConsent(advertising: boolean): CookiePreferences {
 
     if (advertising) {
       loadXPixelScript();
+      loadTikTokPixelScript();
     }
   }
 
@@ -128,11 +135,109 @@ export function loadXPixelScript(): void {
 }
 
 /**
- * Initializes X Pixel if the visitor has already granted advertising consent
+ * Loads the TikTok Pixel base script asynchronously ONLY when advertising consent is granted.
+ * Pixel ID: DAVOHVBC77U88MSOGEB0
+ * Prevents duplicate loading via isTikTokScriptLoaded flag and DOM inspection.
  */
-export function initXPixelIfConsented(): void {
+export function loadTikTokPixelScript(): void {
+  if (typeof window === 'undefined') return;
+  if (!isAdvertisingConsentGranted()) return;
+  if (isTikTokScriptLoaded) return;
+
+  try {
+    // Official TikTok Base Pixel implementation
+    (function (w: any, d: Document, t: string) {
+      w.TiktokAnalyticsObject = t;
+      const ttq = (w[t] = w[t] || []);
+      ttq.methods = [
+        'page',
+        'track',
+        'identify',
+        'instances',
+        'debug',
+        'on',
+        'off',
+        'once',
+        'ready',
+        'alias',
+        'group',
+        'enableCookie',
+        'disableCookie',
+        'holdConsent',
+        'revokeConsent',
+        'grantConsent',
+      ];
+      ttq.setAndDefer = function (target: any, method: string) {
+        target[method] = function () {
+          // eslint-disable-next-line prefer-rest-params
+          target.push([method].concat(Array.prototype.slice.call(arguments, 0)));
+        };
+      };
+      for (let i = 0; i < ttq.methods.length; i++) {
+        ttq.setAndDefer(ttq, ttq.methods[i]);
+      }
+      ttq.instance = function (instanceKey: string) {
+        const e = ttq._i[instanceKey] || [];
+        for (let n = 0; n < ttq.methods.length; n++) {
+          ttq.setAndDefer(e, ttq.methods[n]);
+        }
+        return e;
+      };
+      ttq.load = function (e: string, n?: any) {
+        const r = 'https://analytics.tiktok.com/i18n/pixel/events.js';
+        const o = n && n.partner;
+        ttq._i = ttq._i || {};
+        ttq._i[e] = [];
+        ttq._i[e]._u = r;
+        ttq._t = ttq._t || {};
+        ttq._t[e] = +new Date();
+        ttq._o = ttq._o || {};
+        ttq._o[e] = n || {};
+        const scriptElement = document.createElement('script');
+        scriptElement.type = 'text/javascript';
+        scriptElement.async = true;
+        scriptElement.src = r + '?sdkid=' + e + '&lib=' + t;
+        const firstScript = document.getElementsByTagName('script')[0];
+        if (firstScript && firstScript.parentNode) {
+          firstScript.parentNode.insertBefore(scriptElement, firstScript);
+        } else {
+          document.head.appendChild(scriptElement);
+        }
+      };
+
+      ttq.load(TIKTOK_PIXEL_ID);
+      ttq.page();
+    })(window, document, 'ttq');
+
+    isTikTokScriptLoaded = true;
+  } catch (err) {
+    console.warn('Could not initialize TikTok Pixel', err);
+  }
+}
+
+/**
+ * Initializes all advertising pixels (X & TikTok) if the visitor has already granted advertising consent
+ */
+export function initAdvertisingPixelsIfConsented(): void {
   if (isAdvertisingConsentGranted()) {
     loadXPixelScript();
+    loadTikTokPixelScript();
+  }
+}
+
+/**
+ * Compatibility alias for existing callers
+ */
+export function initXPixelIfConsented(): void {
+  initAdvertisingPixelsIfConsented();
+}
+
+/**
+ * Initializes TikTok Pixel if advertising consent is granted
+ */
+export function initTikTokPixelIfConsented(): void {
+  if (isAdvertisingConsentGranted()) {
+    loadTikTokPixelScript();
   }
 }
 
