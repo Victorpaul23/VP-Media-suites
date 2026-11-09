@@ -39,6 +39,18 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2.5 text-xs">
               <li>
                 <a
+                  href="/vendors"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateTo('/vendors');
+                  }}
+                  className="text-amber-300 hover:text-white font-bold transition-colors flex items-center gap-1.5"
+                >
+                  <span>★ Online Vendor Stores (/vendors)</span>
+                </a>
+              </li>
+              <li>
+                <a
                   href="/GetQuote"
                   onClick={(e) => {
                     e.preventDefault();
@@ -103,6 +115,17 @@ export const Footer: React.FC = () => {
               © {new Date().getFullYear()} VP Media Suites. All rights reserved.
             </span>
             <div className="flex items-center gap-4">
+              <a
+                href="/vendors"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateTo('/vendors');
+                }}
+                className="text-amber-300 hover:text-white transition-colors font-semibold"
+              >
+                Vendor Stores (/vendors)
+              </a>
+              <span className="text-slate-700">·</span>
               <a
                 href="/PrivacyPolicy"
                 onClick={(e) => {

@@ -16,7 +16,7 @@ function spaFallbackPlugin(): Plugin {
         // Pre-create physical directory index files for deep routes
         // This guarantees that any web server (cPanel, Nginx, Apache, Node, static CDNs)
         // will serve index.html directly when /Getquote or /getquote is accessed directly
-        const routes = ['Getquote', 'getquote', 'GetQuote', 'get-quote', 'quote', 'quotes'];
+        const routes = ['Getquote', 'getquote', 'GetQuote', 'get-quote', 'quote', 'quotes', 'vendors', 'vendor', 'Vendors'];
         for (const route of routes) {
           const routeDir = path.join(distPath, route);
           if (!fs.existsSync(routeDir)) {
@@ -38,6 +38,8 @@ export default defineConfig(() => {
       },
     },
     server: {
+      port: 3000,
+      host: '0.0.0.0',
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',

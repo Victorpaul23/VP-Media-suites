@@ -21,7 +21,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenConsultation }) => {
 
   const navLinks = [
     { name: 'Why VP', href: '#why-us' },
-    { name: 'Web Packages', href: '#web-services' },
     { name: 'Showcase', href: '#portfolio' },
     { name: 'Reviews', href: '#reviews' },
     { name: 'FAQs', href: '#faqs' },

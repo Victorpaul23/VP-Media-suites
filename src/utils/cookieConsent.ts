@@ -22,6 +22,10 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ttq?: any;
     TiktokAnalyticsObject?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    fbq?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    snaptr?: any;
     openCookieSettings?: () => void;
   }
 }
@@ -286,6 +290,96 @@ export function fireTikTokEvent(eventName: string, params?: Record<string, unkno
 }
 
 /**
+ * Extracts URL UTM parameters to preserve through conversion and WhatsApp handoff
+ */
+export interface UtmParams {
+  source?: string;
+  medium?: string;
+  campaign?: string;
+  term?: string;
+  content?: string;
+}
+
+export function getUtmParameters(): UtmParams {
+  if (typeof window === 'undefined') return {};
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const utm: UtmParams = {};
+    const s = params.get('utm_source');
+    const m = params.get('utm_medium');
+    const c = params.get('utm_campaign');
+    const t = params.get('utm_term');
+    const ct = params.get('utm_content');
+    if (s) utm.source = s;
+    if (m) utm.medium = m;
+    if (c) utm.campaign = c;
+    if (t) utm.term = t;
+    if (ct) utm.content = ct;
+    return utm;
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Unified multi-pixel tracking for Vendor Landing Page (TikTok, Snapchat, Meta, X).
+ * Strictly gated by advertising cookie consent and includes deduplication.
+ */
+const firedVendorEvents = new Set<string>();
+
+export function trackVendorEvent(
+  eventName: 'PageView' | 'ViewPackages' | 'InitiateEnquiry' | 'Lead' | 'Purchase',
+  params: Record<string, unknown> = {},
+  dedupeKey?: string
+): void {
+  if (typeof window === 'undefined') return;
+  if (!isAdvertisingConsentGranted()) return;
+
+  const key = dedupeKey || `${eventName}_${JSON.stringify(params)}`;
+  if (firedVendorEvents.has(key)) return;
+  firedVendorEvents.add(key);
+
+  try {
+    // 1. TikTok Pixel integration
+    if (window.ttq && typeof window.ttq.track === 'function') {
+      if (eventName === 'PageView') {
+        window.ttq.page?.();
+      } else {
+        window.ttq.track(eventName, params);
+      }
+    }
+
+    // 2. Meta (Facebook) Pixel integration point
+    if (typeof window.fbq === 'function') {
+      window.fbq('track', eventName, params);
+    }
+
+    // 3. Snapchat Pixel integration point
+    if (typeof window.snaptr === 'function') {
+      const snapEventMap: Record<string, string> = {
+        PageView: 'PAGE_VIEW',
+        ViewPackages: 'VIEW_CONTENT',
+        InitiateEnquiry: 'START_CHECKOUT',
+        Lead: 'SIGN_UP',
+        Purchase: 'PURCHASE',
+      };
+      const snapEvent = snapEventMap[eventName] || eventName;
+      window.snaptr('track', snapEvent, params);
+    }
+
+    // 4. X (Twitter) Pixel integration point
+    if (typeof window.twq === 'function') {
+      if (eventName === 'Lead') {
+        window.twq('event', 'tw-rf672-rf8d1', params);
+        window.twq('event', 'tw-rg2tf-rg9ir', params);
+      }
+    }
+  } catch (err) {
+    console.warn(`Vendor event tracking skipped or failed for ${eventName}`, err);
+  }
+}
+
+/**
  * Open the cookie settings modal from anywhere in the app (e.g. from footer link)
  */
 export function openCookieSettings(): void {
@@ -298,3 +392,4 @@ export function openCookieSettings(): void {
 if (typeof window !== 'undefined') {
   window.openCookieSettings = openCookieSettings;
 }
+

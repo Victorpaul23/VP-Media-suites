@@ -201,7 +201,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     description: 'Sleek, high-converting personal brand & portfolio website showcasing professional work and service packages.',
     tags: ['Portfolio Website', 'Personal Brand', 'Vercel Hosted'],
     metrics: 'Live Production Site',
-    demoUrl: 'https://geraldezekwe.vercel.app/',
+    demoUrl: 'https://www.geraldezekwe.com/',
   },
   {
     id: 'p3',

@@ -32,7 +32,7 @@ export function normalizePath(): string {
   if (window.location.hash) {
     const cleanHash = window.location.hash.replace(/^#\/?/, '/');
     const lower = cleanHash.toLowerCase();
-    if (lower.includes('getquote') || lower.includes('get-quote') || lower.includes('quote')) {
+    if (lower.includes('getquote') || lower.includes('get-quote') || lower.includes('quote') || lower.includes('vendor')) {
       return cleanHash.startsWith('/') ? cleanHash : `/${cleanHash}`;
     }
   }

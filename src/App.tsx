@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { WhyUs } from './components/WhyUs';
-import { WebsiteServices } from './components/WebsiteServices';
 import { PortfolioShowcase } from './components/PortfolioShowcase';
 import { ProcessTimeline } from './components/ProcessTimeline';
 import { Testimonials } from './components/Testimonials';
@@ -11,12 +10,18 @@ import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { GetQuotePage } from './pages/GetQuotePage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
+import { VendorLandingPage } from './pages/VendorLandingPage';
 import { CookieConsentBanner } from './components/CookieConsentBanner';
 import { useCurrentPath, navigateTo } from './utils/navigation';
 
 export default function App() {
   const currentPath = useCurrentPath();
   const lowerPath = currentPath.toLowerCase();
+
+  const isVendors =
+    lowerPath.startsWith('/vendors') ||
+    lowerPath.startsWith('/vendor');
+
   const isGetQuote =
     lowerPath.startsWith('/getquote') ||
     lowerPath.startsWith('/get-quote') ||
@@ -28,6 +33,15 @@ export default function App() {
     lowerPath.startsWith('/privacy-policy') ||
     lowerPath.startsWith('/privacy_policy') ||
     lowerPath.startsWith('/privacy');
+
+  if (isVendors) {
+    return (
+      <>
+        <VendorLandingPage />
+        <CookieConsentBanner />
+      </>
+    );
+  }
 
   if (isPrivacyPolicy) {
     return (
@@ -67,9 +81,6 @@ export default function App() {
 
         {/* Why Work With VP Media */}
         <WhyUs />
-
-        {/* Website Packages (₦30k Portfolio, ₦100k SMB, ₦500k Enterprise) */}
-        <WebsiteServices onOpenConsultation={(tierId) => handleOpenQuote(tierId)} />
 
         {/* Web Design & Projects Showcase */}
         <PortfolioShowcase />
