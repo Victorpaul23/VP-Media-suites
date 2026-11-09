@@ -98,19 +98,19 @@ export const PrivacyPolicyPage: React.FC = () => {
           <section className="space-y-3 text-sm text-slate-700 leading-relaxed">
             <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
               <Shield className="w-4 h-4 text-blue-600" />
-              <span>3. Advertising Measurement & The X (Twitter) Pixel</span>
+              <span>3. Advertising Measurement & Pixels (X, TikTok & Snapchat)</span>
             </h2>
             <p>
-              Our website uses the <strong>X (Twitter) Pixel</strong>, an advertising and analytics tool operated by X Corp. The X Pixel allows us to:
+              Our website uses advertising and analytics measurement pixels operated by X Corp. (X Pixel), TikTok (TikTok Pixel), and Snap Inc. (Snap Pixel ID: 07e80de7-09e8-494b-b229-b0262c08578e). These pixels allow us to:
             </p>
             <ul className="list-disc pl-5 space-y-1 text-slate-700 text-sm">
-              <li>Measure the effectiveness and performance of our advertising campaigns on the X platform;</li>
+              <li>Measure the effectiveness and performance of our advertising campaigns across social platforms;</li>
               <li>Track conversion actions (such as when visitors explore website packages or submit quote requests);</li>
               <li>Analyze aggregated website traffic and audience engagement patterns;</li>
               <li>Potentially build advertising audiences to reach prospective clients interested in our web development services.</li>
             </ul>
             <p>
-              <strong>How X Uses Tracking Technologies:</strong> X may use cookies, pixels, tags, local storage, or similar technologies to collect information about your browser and your interactions with our website. This data is transmitted to and processed by X Corp. in accordance with X’s Privacy Policy.
+              <strong>How Ad Platforms Use Tracking Technologies:</strong> These advertising platforms may use cookies, pixels, tags, local storage, or similar technologies to collect information about your browser and your interactions with our website. This data is transmitted to and processed by X Corp., TikTok, and Snap Inc. in accordance with their respective privacy policies.
             </p>
           </section>
 

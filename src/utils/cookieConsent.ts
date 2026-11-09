@@ -15,6 +15,7 @@ let isScriptLoaded = false;
 let isTikTokScriptLoaded = false;
 
 export const TIKTOK_PIXEL_ID = 'DAVOHVBC77U88MSOGEB0';
+export const SNAPCHAT_PIXEL_ID = '07e80de7-09e8-494b-b229-b0262c08578e';
 
 declare global {
   interface Window {

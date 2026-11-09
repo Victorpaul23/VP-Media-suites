@@ -101,7 +101,7 @@ export const CookieConsentBanner: React.FC = () => {
                 </div>
                 <p className="text-xs text-slate-300 leading-relaxed">
                   We use necessary cookies to ensure the proper functionality of our website. With your consent, we also use advertising and analytics technologies, including the{' '}
-                  <strong className="text-white font-semibold">X (Twitter) & TikTok Pixels</strong>, to measure conversions, assess marketing campaign effectiveness, and understand visitor interactions. Learn more in our{' '}
+                  <strong className="text-white font-semibold">X (Twitter), TikTok, & Snapchat Pixels</strong>, to measure conversions, assess marketing campaign effectiveness, and understand visitor interactions. Learn more in our{' '}
                   <a
                     href="/PrivacyPolicy"
                     onClick={handleOpenPrivacy}
@@ -193,14 +193,14 @@ export const CookieConsentBanner: React.FC = () => {
                 </p>
               </div>
 
-              {/* Category 2: Advertising & Analytics (X Pixel) */}
+              {/* Category 2: Advertising & Analytics (X, TikTok & Snapchat Pixels) */}
               <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="text-xs font-bold text-white">
-                      Advertising & Analytics (X / Twitter Pixel)
+                      Advertising & Analytics (X, TikTok & Snapchat Pixels)
                     </span>
-                    <p className="text-[10px] text-slate-400">Operated by X Corp.</p>
+                    <p className="text-[10px] text-slate-400">Operated by X Corp., TikTok, and Snap Inc.</p>
                   </div>
 
                   {/* Toggle Switch */}
@@ -216,7 +216,7 @@ export const CookieConsentBanner: React.FC = () => {
                 </div>
 
                 <p className="text-[11px] text-slate-400 leading-relaxed">
-                  Allows the X Pixel to measure the effectiveness of our advertising campaigns, perform conversion measurement when visitors explore our website or generate project quotes, and tailor relevant ad campaigns on the X platform. If disabled, the X Pixel will not load or collect interaction data.
+                  Allows advertising pixels (X, TikTok, and Snapchat) to measure the effectiveness of our advertising campaigns, perform conversion measurement when visitors explore our website or generate project quotes, and tailor relevant ad campaigns. If disabled, advertising tracking will not collect interaction data.
                 </p>
               </div>
             </div>
