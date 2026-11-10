@@ -92,6 +92,8 @@ export function setCookieConsent(advertising: boolean): CookiePreferences {
     } else {
       // If advertising consent is revoked, clear the session tracker
       window.__snapLastTrackedPath = undefined;
+      lastTrackedPageViewPath = null;
+      firedVendorEvents.clear();
     }
   }
 
@@ -228,6 +230,23 @@ export function loadTikTokPixelScript(): void {
 }
 
 /**
+ * Normalizes a URL path for single-source route tracking & deduplication:
+ * - Strips query parameters (?...) and hashes (#...)
+ * - Strips trailing slashes (except root '/')
+ * - Normalizes to lower case
+ */
+export function normalizeTrackedPath(path?: string): string {
+  let p = path;
+  if (!p && typeof window !== 'undefined') {
+    p = window.location.pathname || '/';
+  }
+  if (!p) return '/';
+  const clean = p.split('?')[0].split('#')[0];
+  const trimmed = clean.replace(/\/+$/, '') || '/';
+  return trimmed.toLowerCase();
+}
+
+/**
  * Loads the Snapchat Pixel base script asynchronously ONLY when advertising consent is granted.
  * Pixel ID: 07e80de7-09e8-494b-b229-b0262c08578e
  * Prevents duplicate script loading via isSnapchatScriptLoaded and window.__snapScriptLoaded flags.
@@ -235,11 +254,14 @@ export function loadTikTokPixelScript(): void {
 export function loadSnapchatPixelScript(): void {
   if (typeof window === 'undefined') return;
   if (!isAdvertisingConsentGranted()) return;
+
+  const currentPath = normalizeTrackedPath();
+
   if (isSnapchatScriptLoaded || window.__snapScriptLoaded) {
     // If script is already loaded, ensure initial PAGE_VIEW is tracked once if not done
-    if (typeof window.snaptr === 'function' && !window.__snapLastTrackedPath) {
-      const currentPath = (window.location.pathname || '/').toLowerCase();
+    if (typeof window.snaptr === 'function' && window.__snapLastTrackedPath !== currentPath) {
       window.__snapLastTrackedPath = currentPath;
+      lastTrackedPageViewPath = currentPath;
       window.snaptr('track', 'PAGE_VIEW', { path: currentPath });
     }
     return;
@@ -270,9 +292,11 @@ export function loadSnapchatPixelScript(): void {
 
     if (typeof window.snaptr === 'function') {
       window.snaptr('init', SNAPCHAT_PIXEL_ID, {});
-      const currentPath = (window.location.pathname || '/').toLowerCase();
-      window.__snapLastTrackedPath = currentPath;
-      window.snaptr('track', 'PAGE_VIEW', { path: currentPath });
+      if (window.__snapLastTrackedPath !== currentPath) {
+        window.__snapLastTrackedPath = currentPath;
+        lastTrackedPageViewPath = currentPath;
+        window.snaptr('track', 'PAGE_VIEW', { path: currentPath });
+      }
     }
 
     isSnapchatScriptLoaded = true;
@@ -395,10 +419,11 @@ export function getUtmParameters(): UtmParams {
 }
 
 /**
- * Unified multi-pixel tracking for Vendor Landing Page (TikTok, Snapchat, Meta, X).
- * Strictly gated by advertising cookie consent and includes deduplication.
+ * Track timestamps of fired action/conversion events to prevent rapid multi-clicks (4s cooldown)
+ * while ensuring legitimate subsequent enquiries are not permanently blocked.
  */
-const firedVendorEvents = new Set<string>();
+const firedVendorEvents = new Map<string, number>();
+const ACTION_DEDUPE_COOLDOWN_MS = 4000;
 
 let lastTrackedPageViewPath: string | null = null;
 
@@ -410,21 +435,29 @@ export function trackVendorEvent(
   if (typeof window === 'undefined') return;
   if (!isAdvertisingConsentGranted()) return;
 
-  const rawPath = typeof params?.path === 'string' ? params.path : window.location.pathname;
-  const currentPath = (rawPath || '/').toLowerCase();
+  // Ensure Snapchat pixel stub and init are ready before dispatching any conversion event
+  if (typeof window.snaptr !== 'function' || !window.__snapScriptLoaded) {
+    loadSnapchatPixelScript();
+  }
+
+  const currentPath = normalizeTrackedPath(typeof params?.path === 'string' ? params.path : undefined);
 
   // Deduplication handling:
   if (eventName === 'PageView') {
-    // If the path hasn't changed since the last PageView call, skip duplicate
-    if (lastTrackedPageViewPath === currentPath) {
+    // If the path hasn't changed since the last PageView call AND Snapchat already tracked this path, skip duplicate
+    if (lastTrackedPageViewPath === currentPath && window.__snapLastTrackedPath === currentPath) {
       return;
     }
     lastTrackedPageViewPath = currentPath;
   } else {
-    // For conversion/action events (Lead, InitiateEnquiry, ViewPackages, Purchase), use Set deduplication
+    // For conversion/action events (Lead, InitiateEnquiry, ViewPackages, Purchase), debounce rapid duplicate clicks
     const key = dedupeKey || `${eventName}_${JSON.stringify(params)}`;
-    if (firedVendorEvents.has(key)) return;
-    firedVendorEvents.add(key);
+    const now = Date.now();
+    const lastFired = firedVendorEvents.get(key);
+    if (lastFired && now - lastFired < ACTION_DEDUPE_COOLDOWN_MS) {
+      return;
+    }
+    firedVendorEvents.set(key, now);
   }
 
   try {

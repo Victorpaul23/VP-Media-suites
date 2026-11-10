@@ -5,7 +5,6 @@ import { AGENCY_INFO } from '../data/agencyData';
 import { navigateTo } from '../utils/navigation';
 import {
   fireXConversionEvent,
-  fireTikTokEvent,
   openCookieSettings,
   trackVendorEvent,
 } from '../utils/cookieConsent';
@@ -277,9 +276,6 @@ export const GetQuotePage: React.FC = () => {
 
     // Track PageView strictly respecting advertising consent
     trackVendorEvent('PageView', { path: '/getquote' });
-    if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
-      window.fbq('track', 'PageView');
-    }
 
     return () => {
       document.title = originalTitle;
@@ -309,6 +305,11 @@ export const GetQuotePage: React.FC = () => {
     if (tierId) {
       setSelectedTier(tierId);
     }
+    trackVendorEvent(
+      'InitiateEnquiry',
+      { package: tierId || selectedTier },
+      `getquote_pkg_click_${tierId || selectedTier}`
+    );
     formSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -356,12 +357,15 @@ Hi Victor! I selected the ${activeTier.name} (${activeTier.price}) on your websi
     )}`;
 
     // Trigger advertising conversion tracking events strictly with non-essential cookie consent
+    trackVendorEvent('Lead', {
+      package: activeTier.id,
+      packageName: activeTier.name,
+      value: activeTier.numericPrice,
+      currency: 'NGN',
+      timeline,
+    });
     fireXConversionEvent('tw-rf672-rf8d1', {});
     fireXConversionEvent('tw-rg2tf-rg9ir', {});
-    fireTikTokEvent('Lead');
-    if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
-      window.fbq('track', 'Lead');
-    }
 
     window.open(url, '_blank');
     setIsSubmitted(true);

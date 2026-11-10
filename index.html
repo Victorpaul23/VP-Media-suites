@@ -53,9 +53,12 @@
       u.parentNode.insertBefore(r,u);})(window,document,
       'https://sc-static.net/scevent.min.js');
 
+      var rawPath = (window.location.pathname || '/').split('?')[0].split('#')[0].replace(/\/+$/, '') || '/';
+      var normalizedPath = rawPath.toLowerCase();
+
       snaptr('init', '07e80de7-09e8-494b-b229-b0262c08578e', {});
       snaptr('track', 'PAGE_VIEW');
-      window.__snapLastTrackedPath = (window.location.pathname || '/').toLowerCase();
+      window.__snapLastTrackedPath = normalizedPath;
       window.__snapScriptLoaded = true;
     })();
     </script>
