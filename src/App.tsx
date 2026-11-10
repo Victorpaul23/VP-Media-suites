@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { WhyUs } from './components/WhyUs';
@@ -13,6 +13,7 @@ import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { VendorLandingPage } from './pages/VendorLandingPage';
 import { CookieConsentBanner } from './components/CookieConsentBanner';
 import { useCurrentPath, navigateTo } from './utils/navigation';
+import { trackVendorEvent } from './utils/cookieConsent';
 
 export default function App() {
   const currentPath = useCurrentPath();
@@ -33,6 +34,13 @@ export default function App() {
     lowerPath.startsWith('/privacy-policy') ||
     lowerPath.startsWith('/privacy_policy') ||
     lowerPath.startsWith('/privacy');
+
+  // Track PageView on client-side route navigation to home page (deduped automatically against index.html)
+  useEffect(() => {
+    if (!isVendors && !isGetQuote && !isPrivacyPolicy) {
+      trackVendorEvent('PageView', { path: '/' });
+    }
+  }, [isVendors, isGetQuote, isPrivacyPolicy]);
 
   if (isVendors) {
     return (

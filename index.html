@@ -33,18 +33,31 @@
     <meta property="twitter:description" content="We engineer high-converting web platforms, business portals, and portfolios that scale your business." />
     <meta property="twitter:image" content="https://lh3.googleusercontent.com/d/1hnxm3eDhKN76sRiRpaATcaxJhHAyfrzV" />
 
-    <!-- Snap Pixel Code -->
+    <!-- Snap Pixel Code (Strict Consent Gated) -->
     <script type="text/javascript">
-    (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function()
-    {a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};
-    a.queue=[];var s='script';r=t.createElement(s);r.async=!0;
-    r.src=n;var u=t.getElementsByTagName(s)[0];
-    u.parentNode.insertBefore(r,u);})(window,document,
-    'https://sc-static.net/scevent.min.js');
+    (function() {
+      try {
+        var rawConsent = localStorage.getItem('vp_media_cookie_consent_v1');
+        if (!rawConsent) return; // Absent / undecided: do NOT load script or init
+        var parsed = JSON.parse(rawConsent);
+        if (!parsed || parsed.advertising !== true) return; // Not consented: do NOT load
+      } catch (err) {
+        return;
+      }
 
-    snaptr('init', '07e80de7-09e8-494b-b229-b0262c08578e', {});
+      // Explicitly consented in previous session: load script and initialize once
+      (function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function()
+      {a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};
+      a.queue=[];var s='script';r=t.createElement(s);r.async=!0;
+      r.src=n;var u=t.getElementsByTagName(s)[0];
+      u.parentNode.insertBefore(r,u);})(window,document,
+      'https://sc-static.net/scevent.min.js');
 
-    snaptr('track', 'PAGE_VIEW');
+      snaptr('init', '07e80de7-09e8-494b-b229-b0262c08578e', {});
+      snaptr('track', 'PAGE_VIEW');
+      window.__snapLastTrackedPath = (window.location.pathname || '/').toLowerCase();
+      window.__snapScriptLoaded = true;
+    })();
     </script>
     <!-- End Snap Pixel Code -->
   </head>

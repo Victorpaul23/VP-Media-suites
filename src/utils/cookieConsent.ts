@@ -13,6 +13,7 @@ export const OPEN_SETTINGS_EVENT = 'vp_open_cookie_settings';
 
 let isScriptLoaded = false;
 let isTikTokScriptLoaded = false;
+let isSnapchatScriptLoaded = false;
 
 export const TIKTOK_PIXEL_ID = 'DAVOHVBC77U88MSOGEB0';
 export const SNAPCHAT_PIXEL_ID = '07e80de7-09e8-494b-b229-b0262c08578e';
@@ -27,6 +28,8 @@ declare global {
     fbq?: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     snaptr?: any;
+    __snapLastTrackedPath?: string;
+    __snapScriptLoaded?: boolean;
     openCookieSettings?: () => void;
   }
 }
@@ -85,6 +88,10 @@ export function setCookieConsent(advertising: boolean): CookiePreferences {
     if (advertising) {
       loadXPixelScript();
       loadTikTokPixelScript();
+      loadSnapchatPixelScript();
+    } else {
+      // If advertising consent is revoked, clear the session tracker
+      window.__snapLastTrackedPath = undefined;
     }
   }
 
@@ -221,12 +228,68 @@ export function loadTikTokPixelScript(): void {
 }
 
 /**
- * Initializes all advertising pixels (X & TikTok) if the visitor has already granted advertising consent
+ * Loads the Snapchat Pixel base script asynchronously ONLY when advertising consent is granted.
+ * Pixel ID: 07e80de7-09e8-494b-b229-b0262c08578e
+ * Prevents duplicate script loading via isSnapchatScriptLoaded and window.__snapScriptLoaded flags.
+ */
+export function loadSnapchatPixelScript(): void {
+  if (typeof window === 'undefined') return;
+  if (!isAdvertisingConsentGranted()) return;
+  if (isSnapchatScriptLoaded || window.__snapScriptLoaded) {
+    // If script is already loaded, ensure initial PAGE_VIEW is tracked once if not done
+    if (typeof window.snaptr === 'function' && !window.__snapLastTrackedPath) {
+      const currentPath = (window.location.pathname || '/').toLowerCase();
+      window.__snapLastTrackedPath = currentPath;
+      window.snaptr('track', 'PAGE_VIEW', { path: currentPath });
+    }
+    return;
+  }
+
+  try {
+    (function (e: any, t: Document, n: string) {
+      if (e.snaptr) return;
+      const a: any = (e.snaptr = function () {
+        if (a.handleRequest) {
+          a.handleRequest.apply(a, arguments);
+        } else {
+          a.queue.push(arguments);
+        }
+      });
+      a.queue = [];
+      const s = 'script';
+      const r = t.createElement(s) as HTMLScriptElement;
+      r.async = true;
+      r.src = n;
+      const u = t.getElementsByTagName(s)[0];
+      if (u && u.parentNode) {
+        u.parentNode.insertBefore(r, u);
+      } else {
+        document.head.appendChild(r);
+      }
+    })(window, document, 'https://sc-static.net/scevent.min.js');
+
+    if (typeof window.snaptr === 'function') {
+      window.snaptr('init', SNAPCHAT_PIXEL_ID, {});
+      const currentPath = (window.location.pathname || '/').toLowerCase();
+      window.__snapLastTrackedPath = currentPath;
+      window.snaptr('track', 'PAGE_VIEW', { path: currentPath });
+    }
+
+    isSnapchatScriptLoaded = true;
+    window.__snapScriptLoaded = true;
+  } catch (err) {
+    console.warn('Could not initialize Snapchat Pixel', err);
+  }
+}
+
+/**
+ * Initializes all advertising pixels (X, TikTok & Snapchat) if the visitor has already granted advertising consent
  */
 export function initAdvertisingPixelsIfConsented(): void {
   if (isAdvertisingConsentGranted()) {
     loadXPixelScript();
     loadTikTokPixelScript();
+    loadSnapchatPixelScript();
   }
 }
 
@@ -243,6 +306,15 @@ export function initXPixelIfConsented(): void {
 export function initTikTokPixelIfConsented(): void {
   if (isAdvertisingConsentGranted()) {
     loadTikTokPixelScript();
+  }
+}
+
+/**
+ * Initializes Snapchat Pixel if advertising consent is granted
+ */
+export function initSnapchatPixelIfConsented(): void {
+  if (isAdvertisingConsentGranted()) {
+    loadSnapchatPixelScript();
   }
 }
 
@@ -328,6 +400,8 @@ export function getUtmParameters(): UtmParams {
  */
 const firedVendorEvents = new Set<string>();
 
+let lastTrackedPageViewPath: string | null = null;
+
 export function trackVendorEvent(
   eventName: 'PageView' | 'ViewPackages' | 'InitiateEnquiry' | 'Lead' | 'Purchase',
   params: Record<string, unknown> = {},
@@ -336,9 +410,22 @@ export function trackVendorEvent(
   if (typeof window === 'undefined') return;
   if (!isAdvertisingConsentGranted()) return;
 
-  const key = dedupeKey || `${eventName}_${JSON.stringify(params)}`;
-  if (firedVendorEvents.has(key)) return;
-  firedVendorEvents.add(key);
+  const rawPath = typeof params?.path === 'string' ? params.path : window.location.pathname;
+  const currentPath = (rawPath || '/').toLowerCase();
+
+  // Deduplication handling:
+  if (eventName === 'PageView') {
+    // If the path hasn't changed since the last PageView call, skip duplicate
+    if (lastTrackedPageViewPath === currentPath) {
+      return;
+    }
+    lastTrackedPageViewPath = currentPath;
+  } else {
+    // For conversion/action events (Lead, InitiateEnquiry, ViewPackages, Purchase), use Set deduplication
+    const key = dedupeKey || `${eventName}_${JSON.stringify(params)}`;
+    if (firedVendorEvents.has(key)) return;
+    firedVendorEvents.add(key);
+  }
 
   try {
     // 1. TikTok Pixel integration
@@ -357,15 +444,24 @@ export function trackVendorEvent(
 
     // 3. Snapchat Pixel integration point
     if (typeof window.snaptr === 'function') {
-      const snapEventMap: Record<string, string> = {
-        PageView: 'PAGE_VIEW',
-        ViewPackages: 'VIEW_CONTENT',
-        InitiateEnquiry: 'START_CHECKOUT',
-        Lead: 'SIGN_UP',
-        Purchase: 'PURCHASE',
-      };
-      const snapEvent = snapEventMap[eventName] || eventName;
-      window.snaptr('track', snapEvent, params);
+      if (eventName === 'PageView') {
+        // Prevent duplicate PAGE_VIEW if Snapchat already logged this exact path on initial HTML load
+        if (window.__snapLastTrackedPath === currentPath) {
+          // Already logged for this path on initial HTML load, skip duplicate
+        } else {
+          window.__snapLastTrackedPath = currentPath;
+          window.snaptr('track', 'PAGE_VIEW', params);
+        }
+      } else {
+        const snapEventMap: Record<string, string> = {
+          ViewPackages: 'VIEW_CONTENT',
+          InitiateEnquiry: 'START_CHECKOUT',
+          Lead: 'SIGN_UP',
+          Purchase: 'PURCHASE',
+        };
+        const snapEvent = snapEventMap[eventName] || eventName;
+        window.snaptr('track', snapEvent, params);
+      }
     }
 
     // 4. X (Twitter) Pixel integration point
