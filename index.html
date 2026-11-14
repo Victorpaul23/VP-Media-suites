@@ -63,6 +63,67 @@
     })();
     </script>
     <!-- End Snap Pixel Code -->
+
+    <!-- TikTok Pixel Code (Strict Consent Gated) -->
+    <script type="text/javascript">
+    (function() {
+      try {
+        var rawConsent = localStorage.getItem('vp_media_cookie_consent_v1');
+        if (!rawConsent) return; // Absent / undecided: do NOT load script or init
+        var parsed = JSON.parse(rawConsent);
+        if (!parsed || parsed.advertising !== true) return; // Not consented: do NOT load
+      } catch (err) {
+        return;
+      }
+
+      if (window.__ttqScriptLoaded || (window.ttq && window.ttq._i && window.ttq._i['DAVOHVBC77U88MSOGEB0'])) return;
+
+      !function (w, d, t) {
+        w.TiktokAnalyticsObject = t;
+        var ttq = (w[t] = w[t] || []);
+        ttq.methods = ["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"];
+        ttq.setAndDefer = function(t, e) {
+          t[e] = function() {
+            t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+          };
+        };
+        for (var i = 0; i < ttq.methods.length; i++) ttq.setAndDefer(ttq, ttq.methods[i]);
+        ttq.instance = function(t) {
+          for (var e = ttq._i[t] || [], n = 0; n < ttq.methods.length; n++) ttq.setAndDefer(e, ttq.methods[n]);
+          return e;
+        };
+        ttq.load = function(e, n) {
+          var r = "https://analytics.tiktok.com/i18n/pixel/events.js";
+          ttq._i = ttq._i || {};
+          ttq._i[e] = [];
+          ttq._i[e]._u = r;
+          ttq._t = ttq._t || {};
+          ttq._t[e] = +new Date;
+          ttq._o = ttq._o || {};
+          ttq._o[e] = n || {};
+          var scriptEl = document.createElement("script");
+          scriptEl.type = "text/javascript";
+          scriptEl.async = !0;
+          scriptEl.src = r + "?sdkid=" + e + "&lib=" + t;
+          var firstScript = document.getElementsByTagName("script")[0];
+          if (firstScript && firstScript.parentNode) {
+            firstScript.parentNode.insertBefore(scriptEl, firstScript);
+          } else {
+            document.head.appendChild(scriptEl);
+          }
+        };
+
+        ttq.load('DAVOHVBC77U88MSOGEB0');
+        ttq.page();
+      }(window, document, 'ttq');
+
+      var rawPath = (window.location.pathname || '/').split('?')[0].split('#')[0].replace(/\/+$/, '') || '/';
+      var normalizedPath = rawPath.toLowerCase();
+      window.__ttqLastTrackedPath = normalizedPath;
+      window.__ttqScriptLoaded = true;
+    })();
+    </script>
+    <!-- End TikTok Pixel Code -->
   </head>
   <body>
     <div id="root"></div>

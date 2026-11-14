@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { AGENCY_INFO } from '../data/agencyData';
 import { navigateTo } from '../utils/navigation';
 import {
-  fireXConversionEvent,
+  fireTikTokEvent,
   openCookieSettings,
   trackVendorEvent,
 } from '../utils/cookieConsent';
@@ -242,6 +242,7 @@ export const GetQuotePage: React.FC = () => {
   const [timeline, setTimeline] = useState('This week');
   const [projectDetails, setProjectDetails] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedWhatsAppUrl, setSubmittedWhatsAppUrl] = useState('');
   const [inlinePlaying, setInlinePlaying] = useState<Record<string, boolean>>({});
   const [modalVideo, setModalVideo] = useState<VideoTestimonialItem | null>(null);
 
@@ -355,17 +356,24 @@ Hi Victor! I selected the ${activeTier.name} (${activeTier.price}) on your websi
     const url = `https://wa.me/${AGENCY_INFO.whatsappNumber}?text=${encodeURIComponent(
       whatsappMessage
     )}`;
+    setSubmittedWhatsAppUrl(url);
 
     // Trigger advertising conversion tracking events strictly with non-essential cookie consent
-    trackVendorEvent('Lead', {
-      package: activeTier.id,
-      packageName: activeTier.name,
-      value: activeTier.numericPrice,
-      currency: 'NGN',
-      timeline,
-    });
-    fireXConversionEvent('tw-rf672-rf8d1', {});
-    fireXConversionEvent('tw-rg2tf-rg9ir', {});
+    // 1. Direct TikTok Lead event (original parameterless call, fires once when main.*.js is ready)
+    fireTikTokEvent('Lead');
+    // 2. Snapchat SIGN_UP, Meta Lead, and X conversions (skipTikTok prevents duplicate TikTok Lead)
+    trackVendorEvent(
+      'Lead',
+      {
+        package: activeTier.id,
+        packageName: activeTier.name,
+        value: activeTier.numericPrice,
+        currency: 'NGN',
+        timeline,
+      },
+      undefined,
+      { skipTikTok: true }
+    );
 
     window.open(url, '_blank');
     setIsSubmitted(true);
@@ -1282,7 +1290,7 @@ Hi Victor! I selected the ${activeTier.name} (${activeTier.price}) on your websi
                     </div>
 
                     <a
-                      href={`https://wa.me/${AGENCY_INFO.whatsappNumber}`}
+                      href={submittedWhatsAppUrl || `https://wa.me/${AGENCY_INFO.whatsappNumber}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 px-7 py-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-['Sora',sans-serif] font-bold text-xs tracking-tight transition-all shadow-md"

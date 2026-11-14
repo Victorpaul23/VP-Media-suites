@@ -30,6 +30,8 @@ declare global {
     snaptr?: any;
     __snapLastTrackedPath?: string;
     __snapScriptLoaded?: boolean;
+    __ttqLastTrackedPath?: string;
+    __ttqScriptLoaded?: boolean;
     openCookieSettings?: () => void;
   }
 }
@@ -92,6 +94,7 @@ export function setCookieConsent(advertising: boolean): CookiePreferences {
     } else {
       // If advertising consent is revoked, clear the session tracker
       window.__snapLastTrackedPath = undefined;
+      window.__ttqLastTrackedPath = undefined;
       lastTrackedPageViewPath = null;
       firedVendorEvents.clear();
     }
@@ -156,7 +159,18 @@ export function loadXPixelScript(): void {
 export function loadTikTokPixelScript(): void {
   if (typeof window === 'undefined') return;
   if (!isAdvertisingConsentGranted()) return;
-  if (isTikTokScriptLoaded) return;
+
+  const currentPath = normalizeTrackedPath();
+
+  if (isTikTokScriptLoaded || window.__ttqScriptLoaded || Boolean(window.ttq?._i?.[TIKTOK_PIXEL_ID])) {
+    isTikTokScriptLoaded = true;
+    window.__ttqScriptLoaded = true;
+    if (window.ttq && window.__ttqLastTrackedPath !== currentPath) {
+      window.__ttqLastTrackedPath = currentPath;
+      window.ttq.page?.();
+    }
+    return;
+  }
 
   try {
     // Official TikTok Base Pixel implementation
@@ -224,6 +238,8 @@ export function loadTikTokPixelScript(): void {
     })(window, document, 'ttq');
 
     isTikTokScriptLoaded = true;
+    window.__ttqScriptLoaded = true;
+    window.__ttqLastTrackedPath = currentPath;
   } catch (err) {
     console.warn('Could not initialize TikTok Pixel', err);
   }
@@ -363,6 +379,135 @@ export function fireXConversionEvent(eventId: string, params: Record<string, unk
 }
 
 /**
+ * Checks whether TikTok's secondary runtime (main.*.js) has finished loading and initialized,
+ * not just the inline stub or the events.js loader.
+ */
+export function isTikTokSdkReady(): boolean {
+  if (typeof window === 'undefined' || !window.ttq) return false;
+  const ttq = window.ttq;
+  if (typeof ttq.track !== 'function') return false;
+
+  const pixelInstance = ttq._i?.[TIKTOK_PIXEL_ID];
+  return Boolean(
+    ttq._mounted === true &&
+      ttq.initialize === true &&
+      (pixelInstance?._init === true || typeof ttq.getReporter === 'function')
+  );
+}
+
+/**
+ * Dispatches a TikTok event immediately if main.*.js is ready, or observes script/SDK
+ * readiness and dispatches exactly once as soon as main.*.js finishes initializing.
+ */
+function dispatchTikTokTrackWhenReady(
+  eventName: string,
+  params?: Record<string, unknown>
+): void {
+  if (typeof window === 'undefined') return;
+  if (!isAdvertisingConsentGranted()) return;
+
+  if (!window.ttq || !window.__ttqScriptLoaded) {
+    loadTikTokPixelScript();
+  }
+
+  const executeTrack = () => {
+    if (!isAdvertisingConsentGranted()) return;
+    if (!window.ttq || typeof window.ttq.track !== 'function') return;
+    if (params && Object.keys(params).length > 0) {
+      window.ttq.track(eventName, params);
+    } else {
+      window.ttq.track(eventName);
+    }
+  };
+
+  if (isTikTokSdkReady()) {
+    executeTrack();
+    return;
+  }
+
+  let settled = false;
+  let observer: MutationObserver | null = null;
+  let pollTimer: ReturnType<typeof setInterval> | null = null;
+  let timeoutTimer: ReturnType<typeof setTimeout> | null = null;
+  const attachedScripts = new Set<HTMLScriptElement>();
+
+  const cleanup = () => {
+    if (observer) {
+      observer.disconnect();
+      observer = null;
+    }
+    if (pollTimer !== null) {
+      clearInterval(pollTimer);
+      pollTimer = null;
+    }
+    if (timeoutTimer !== null) {
+      clearTimeout(timeoutTimer);
+      timeoutTimer = null;
+    }
+    attachedScripts.forEach((scriptEl) => {
+      scriptEl.removeEventListener('load', tryDispatch);
+    });
+    attachedScripts.clear();
+  };
+
+  const tryDispatch = () => {
+    if (settled) return;
+    if (!isAdvertisingConsentGranted()) {
+      settled = true;
+      cleanup();
+      return;
+    }
+    if (isTikTokSdkReady()) {
+      settled = true;
+      cleanup();
+      try {
+        executeTrack();
+      } catch (err) {
+        console.warn('TikTok conversion event skipped or failed', err);
+      }
+    }
+  };
+
+  const attachScriptListener = (node: unknown) => {
+    if (
+      typeof HTMLScriptElement !== 'undefined' &&
+      node instanceof HTMLScriptElement &&
+      node.src.includes('analytics.tiktok.com') &&
+      !attachedScripts.has(node)
+    ) {
+      attachedScripts.add(node);
+      node.addEventListener('load', tryDispatch);
+    }
+  };
+
+  if (typeof document !== 'undefined') {
+    const existingScripts = document.querySelectorAll?.('script[src*="analytics.tiktok.com"]');
+    existingScripts?.forEach((el) => attachScriptListener(el));
+
+    if (typeof MutationObserver !== 'undefined' && document.head) {
+      observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          mutation.addedNodes.forEach((addedNode) => {
+            attachScriptListener(addedNode);
+          });
+        }
+        tryDispatch();
+      });
+      observer.observe(document.head, { childList: true, subtree: true });
+    }
+  }
+
+  // Lightweight state check to catch cached/inline execution completion and auto-expire after 15s
+  pollTimer = setInterval(tryDispatch, 50);
+  timeoutTimer = setTimeout(() => {
+    if (!settled) {
+      settled = true;
+      cleanup();
+    }
+  }, 15000);
+}
+
+/**
  * Fire a TikTok conversion event safely ONLY IF non-essential advertising cookies are consented to.
  */
 export function fireTikTokEvent(eventName: string, params?: Record<string, unknown>): void {
@@ -374,13 +519,7 @@ export function fireTikTokEvent(eventName: string, params?: Record<string, unkno
   }
 
   try {
-    if (window.ttq && typeof window.ttq.track === 'function') {
-      if (params && Object.keys(params).length > 0) {
-        window.ttq.track(eventName, params);
-      } else {
-        window.ttq.track(eventName);
-      }
-    }
+    dispatchTikTokTrackWhenReady(eventName, params);
   } catch (err) {
     console.warn('TikTok conversion event skipped or failed', err);
   }
@@ -427,13 +566,23 @@ const ACTION_DEDUPE_COOLDOWN_MS = 4000;
 
 let lastTrackedPageViewPath: string | null = null;
 
+export interface TrackVendorEventOptions {
+  skipTikTok?: boolean;
+}
+
 export function trackVendorEvent(
   eventName: 'PageView' | 'ViewPackages' | 'InitiateEnquiry' | 'Lead' | 'Purchase',
   params: Record<string, unknown> = {},
-  dedupeKey?: string
+  dedupeKey?: string,
+  options?: TrackVendorEventOptions
 ): void {
   if (typeof window === 'undefined') return;
   if (!isAdvertisingConsentGranted()) return;
+
+  // Ensure TikTok pixel is initialized before dispatching events (when TikTok dispatch is enabled)
+  if (!options?.skipTikTok && (!window.ttq || !window.__ttqScriptLoaded)) {
+    loadTikTokPixelScript();
+  }
 
   // Ensure Snapchat pixel stub and init are ready before dispatching any conversion event
   if (typeof window.snaptr !== 'function' || !window.__snapScriptLoaded) {
@@ -444,8 +593,12 @@ export function trackVendorEvent(
 
   // Deduplication handling:
   if (eventName === 'PageView') {
-    // If the path hasn't changed since the last PageView call AND Snapchat already tracked this path, skip duplicate
-    if (lastTrackedPageViewPath === currentPath && window.__snapLastTrackedPath === currentPath) {
+    // Skip duplicate only if all active PageView trackers already recorded this path
+    if (
+      lastTrackedPageViewPath === currentPath &&
+      window.__snapLastTrackedPath === currentPath &&
+      (options?.skipTikTok || window.__ttqLastTrackedPath === currentPath)
+    ) {
       return;
     }
     lastTrackedPageViewPath = currentPath;
@@ -462,11 +615,41 @@ export function trackVendorEvent(
 
   try {
     // 1. TikTok Pixel integration
-    if (window.ttq && typeof window.ttq.track === 'function') {
+    if (!options?.skipTikTok && window.ttq && typeof window.ttq.track === 'function') {
       if (eventName === 'PageView') {
-        window.ttq.page?.();
+        if (window.__ttqLastTrackedPath !== currentPath) {
+          window.__ttqLastTrackedPath = currentPath;
+          window.ttq.page?.();
+        }
       } else {
-        window.ttq.track(eventName, params);
+        const tikTokEventMap: Record<string, string> = {
+          ViewPackages: 'ViewContent',
+          InitiateEnquiry: 'InitiateCheckout',
+          Lead: 'Lead',
+          Purchase: 'Purchase',
+        };
+        const tikTokEvent = tikTokEventMap[eventName] || eventName;
+
+        const tikTokParams: Record<string, unknown> = {};
+        if (typeof params.package === 'string' && params.package) {
+          tikTokParams.content_id = params.package;
+          tikTokParams.content_type = 'product';
+        }
+        if (typeof params.packageName === 'string' && params.packageName) {
+          tikTokParams.content_name = params.packageName;
+        }
+        if (typeof params.value === 'number') {
+          tikTokParams.value = params.value;
+        }
+        if (typeof params.currency === 'string' && params.currency) {
+          tikTokParams.currency = params.currency;
+        }
+
+        if (Object.keys(tikTokParams).length > 0) {
+          dispatchTikTokTrackWhenReady(tikTokEvent, tikTokParams);
+        } else {
+          dispatchTikTokTrackWhenReady(tikTokEvent);
+        }
       }
     }
 
